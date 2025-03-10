@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+NCDrill File Report For: MB1137.PcbDoc   2015/8/21  15:16:08
+---------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : MB1137-RoundHoles.TXT
+ASCII SlotHoles File : MB1137-SlotHoles.TXT
+EIA File   : MB1137.DRL
+
+Tool         Hole Size           Hole Type     Hole Count Plated       Tool Travel
+---------------------------------------------------------------------------
+T1        8mil (0.2032mm)          Round          880              114.09 Inch (2897.76 mm)
+T2        12mil (0.3048mm)         Round          39               9.65 Inch (245.09 mm)
+T3        12.99mil (0.32995mm)     Round          2                0.05 Inch (1.20 mm)
+T4        23.62mil (0.59995mm)     Slot           4                287.29 Inch (7297.24 mm)
+T5        25.59mil (0.64999mm)     Slot           2                281.80 Inch (7157.82 mm)
+T6        27.56mil (0.70002mm)     Round          12               1.34 Inch (34.10 mm)
+T7        27.56mil (0.70002mm)     Slot           2                282.79 Inch (7182.81 mm)
+T8        33.46mil (0.84988mm)     Round          2                0.20 Inch (5.00 mm)
+T9        40.16mil (1.02006mm)     Round          278              43.51 Inch (1105.16 mm)
+T10       59.06mil (1.50012mm)     Round          2         NPTH   0.63 Inch (16.00 mm)
+T11       125.98mil (3.19989mm)    Round          5         NPTH   7.36 Inch (186.91 mm)
+---------------------------------------------------------------------------
+Totals                                            1228             1028.70 Inch (26129.09 mm)
+
+Total Processing Time (hh:mm:ss) : 00:00:01

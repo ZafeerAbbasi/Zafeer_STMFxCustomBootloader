@@ -1,0 +1,296 @@
+Designator Footprint               Mid X         Mid Y         Ref X         Ref Y         Pad X         Pad Y TB      Rotation Comment        
+
+LD2        0603D-B                879mil       1960mil        879mil       1960mil        879mil   1926.535mil  T        270.00 Blue           
+SB179      SB_0603               1647mil       -672mil       1647mil       -672mil    1613.25mil       -672mil  B        180.00 Closed         
+D6         SOT23-6L               404mil      -1909mil        404mil      -1909mil    356.756mil  -1871.598mil  T          0.00 ESDA6V1BC6     
+SB120      SB_0603            1612.75mil       1368mil    1612.75mil       1368mil    1612.75mil    1401.75mil  B         90.00 Closed         
+SB119      SB_0603               1522mil    1366.25mil       1522mil    1366.25mil       1522mil     1332.5mil  B        270.00 Open           
+SB184      SB_0603                579mil  -1752.937mil        579mil  -1752.937mil        579mil  -1786.687mil  B        270.00 Closed         
+SB185      SB_0603                638mil      -1753mil        638mil      -1753mil        638mil   -1719.25mil  B         90.00 Closed         
+SB186      SB_0603                236mil  -1752.937mil        236mil  -1752.937mil        236mil  -1719.187mil  B         90.00 Closed         
+T2         SOT-23             619.005mil  -1749.001mil    619.005mil  -1749.001mil    580.423mil  -1788.371mil  T        360.00 9013           
+SB113      SB_0603                 -1mil       1577mil         -1mil       1577mil      32.75mil       1577mil  B        360.00 Open           
+SB114      SB_0603                 -1mil       1518mil         -1mil       1518mil      32.75mil       1518mil  B        360.00 Closed         
+CN10       HDR_17x2_2R54_V_F       1850mil       -100mil       1800mil        700mil       1800mil        700mil  T        270.00 Header 17X2_Female
+CN7        HDR_10x2_2R54_V_F       1850mil       1310mil       1800mil       1760mil       1800mil       1760mil  T        270.00 Header 10X2_Female
+CN9        HDR_15x2_2R54_V_F         50mil       -200mil          0mil        500mil          0mil        500mil  T        270.00 Header 15X2_Female
+CN8        HDR_8x2_2R54_V_F         50mil       1050mil          0mil       1400mil          0mil       1400mil  T        270.00 Header 8X2_Female
+SB177      SB_0603                765mil       -642mil        765mil       -642mil     731.25mil       -642mil  B        180.00 Closed         
+SB127      SB_0603                806mil       1164mil        806mil       1164mil        806mil    1197.75mil  B         90.00 Circuit Breaker
+U11        Transformer           1197mil      -1298mil       1197mil      -1298mil       1372mil  -1120.441mil  T        180.00 KMS-1102NL     
+SB136      SB_0603                402mil        486mil        402mil        486mil     368.25mil        486mil  B        180.00 Circuit Breaker
+SB117      SB_0603                801mil       1351mil        801mil       1351mil     767.25mil       1351mil  B        180.00 Closed         
+SB164      SB_0603               1121mil     35.806mil       1121mil     35.806mil       1121mil      2.056mil  B        270.00 Closed         
+SB160      SB_0603               1062mil         36mil       1062mil         36mil       1062mil       2.25mil  B        270.00 Closed         
+SB118      SB_0603               1318mil    1366.25mil       1318mil    1366.25mil       1318mil     1332.5mil  B        270.00 Closed         
+SB14       SB_0603               1620mil       -300mil       1620mil       -300mil    1586.25mil       -300mil  T        180.00 Circuit Breaker
+SB172      SB_0603               1681mil    -315.25mil       1681mil    -315.25mil       1681mil       -349mil  B        270.00 Circuit Breaker
+SB4        SB_0603               1082mil    1366.25mil       1082mil    1366.25mil       1082mil     1332.5mil  T        270.00 Closed         
+SB11       SB_0603                292mil   -299.972mil        292mil   -299.972mil     325.75mil   -299.972mil  T        360.00 Circuit Breaker
+SB159      SB_0603               1681mil        135mil       1681mil        135mil       1681mil     101.25mil  B        270.00 Circuit Breaker
+SB158      SB_0603               1622mil        135mil       1622mil        135mil       1622mil     101.25mil  B        270.00 Circuit Breaker
+SB116      SB_0603                801mil       1410mil        801mil       1410mil     767.25mil       1410mil  B        180.00 Closed         
+SB137      SB_0603               1172mil        473mil       1172mil        473mil    1138.25mil        473mil  B        180.00 Circuit Breaker
+SB10       SB_0603               1620mil       -200mil       1620mil       -200mil    1586.25mil       -200mil  T        180.00 Circuit Breaker
+SB168      SB_0603               1681mil     -197.5mil       1681mil     -197.5mil       1681mil    -231.25mil  B        270.00 Circuit Breaker
+SB15       SB_0603               1620mil       -450mil       1620mil       -450mil    1586.25mil       -450mil  T        180.00 Circuit Breaker
+SB175      SB_0603               1681mil       -433mil       1681mil       -433mil       1681mil    -466.75mil  B        270.00 Circuit Breaker
+SB115      SB_0603                402mil       1362mil        402mil       1362mil     368.25mil       1362mil  B        180.00 Circuit Breaker
+SB169      SB_0603                242mil       -300mil        242mil       -300mil     275.75mil       -300mil  B        360.00 Circuit Breaker
+SB126      SB_0603                688mil       1164mil        688mil       1164mil        688mil    1197.75mil  B         90.00 Circuit Breaker
+SB176      SB_0603                243mil       -600mil        243mil       -600mil     276.75mil       -600mil  B        360.00 Circuit Breaker
+SB128      SB_0603                747mil       1164mil        747mil       1164mil        747mil    1197.75mil  B         90.00 Circuit Breaker
+SB170      SB_0603                242mil       -400mil        242mil       -400mil     208.25mil       -400mil  B        180.00 Circuit Breaker
+R48        0603R                  765mil       -666mil        765mil       -666mil    796.496mil       -666mil  T        180.00 33             
+C7         0603C                 1240mil       2361mil       1240mil       2361mil   1271.496mil       2361mil  T        180.00 20pF[N/A]      
+SB12       SB_0603               1440mil   -296.549mil       1440mil   -296.549mil       1440mil   -330.299mil  T        270.00 Closed         
+SB173      SB_0603                242mil       -500mil        242mil       -500mil     275.75mil       -500mil  B        360.00 Closed         
+SB7        SB_0603               1259mil    1366.25mil       1259mil    1366.25mil       1259mil       1400mil  T         90.00 Closed         
+SB145      SB_0603                775mil     305.25mil        775mil     305.25mil        775mil      271.5mil  B        270.00 Open           
+TP1        TP                     522mil       1361mil        522mil       1361mil        522mil       1361mil  T          0.00 USB_SOF        
+SB135      SB_0603                539mil     596.25mil        539mil     596.25mil        539mil        630mil  B         90.00 Circuit Breaker
+SB141      SB_0603               1490mil        432mil       1490mil        432mil    1456.25mil        432mil  B        180.00 Circuit Breaker
+SB134      SB_0603                480mil     596.25mil        480mil     596.25mil        480mil        630mil  B         90.00 Circuit Breaker
+SB130      SB_0603                435mil        807mil        435mil        807mil        435mil     773.25mil  B        270.00 Circuit Breaker
+SB151      SB_0603               1490mil        373mil       1490mil        373mil    1456.25mil        373mil  B        180.00 Circuit Breaker
+SB131      SB_0603                539mil        807mil        539mil        807mil        539mil     773.25mil  B        270.00 Circuit Breaker
+SB181      SB_0603               1647mil       -755mil       1647mil       -755mil    1613.25mil       -755mil  B        180.00 Closed         
+SB178      SB_0603               1647mil       -613mil       1647mil       -613mil    1613.25mil       -613mil  B        180.00 Closed         
+SB13       SB_0603                292mil       -359mil        292mil       -359mil     325.75mil       -359mil  T        360.00 Closed         
+SB140      SB_0603               1172mil        414mil       1172mil        414mil    1138.25mil        414mil  B        180.00 Circuit Breaker
+SB167      SB_0603            1621.75mil     -197.5mil    1621.75mil     -197.5mil    1621.75mil    -163.75mil  B         90.00 Circuit Breaker
+SB157      SB_0603                945mil        138mil        945mil        138mil     911.25mil        138mil  B        180.00 Circuit Breaker
+SB150      SB_0603               1172mil        354mil       1172mil        354mil    1138.25mil        354mil  B        180.00 Circuit Breaker
+SB171      SB_0603               1622mil    -315.25mil       1622mil    -315.25mil       1622mil     -281.5mil  B         90.00 Circuit Breaker
+SB147      SB_0603                893mil        305mil        893mil        305mil        893mil     338.75mil  B         90.00 Circuit Breaker
+SB165      SB_0603           1180.534mil     35.806mil   1180.534mil     35.806mil   1180.534mil      2.056mil  B        270.00 Circuit Breaker
+SB155      SB_0603               1172mil        276mil       1172mil        276mil    1205.75mil        276mil  B        360.00 Closed         
+SB174      SB_0603               1622mil    -433.25mil       1622mil    -433.25mil       1622mil     -399.5mil  B         90.00 Circuit Breaker
+SB146      SB_0603                834mil        305mil        834mil        305mil        834mil     338.75mil  B         90.00 Circuit Breaker
+SB143      SB_0603                402mil      309.5mil        402mil      309.5mil     368.25mil      309.5mil  B        180.00 Open           
+SB138      SB_0603                402mil      368.5mil        402mil      368.5mil     368.25mil      368.5mil  B        180.00 Open           
+SB163      SB_0603               1003mil         36mil       1003mil         36mil       1003mil      69.75mil  B         90.00 Closed         
+SB148      SB_0603           1013.701mil        305mil   1013.701mil        305mil   1013.701mil     271.25mil  B        270.00 Open           
+SB144      SB_0603                716mil        305mil        716mil        305mil        716mil     271.25mil  B        270.00 Open           
+R46        0603R                  765mil       -548mil        765mil       -548mil    796.496mil       -548mil  T        180.00 1K5            
+R47        0603R                  765mil       -607mil        765mil       -607mil    733.504mil       -607mil  T        360.00 10K            
+R40        0603R              796.012mil       -447mil    796.012mil       -447mil    796.012mil   -478.496mil  T         90.00 33             
+D4         SOD-323               1421mil       2330mil       1421mil       2330mil   1373.756mil       2330mil  T        360.00 BAT60JFILM     
+JP7        HDR_1x2_2R54_V_M_S       1385mil       -854mil       1335mil       -854mil       1335mil       -854mil  T        360.00                
+JP4        HDR_1x2_2R54_V_M_S        650mil       1500mil        600mil       1500mil        600mil       1500mil  T        360.00                
+R35        0603R                  747mil       1164mil        747mil       1164mil        747mil   1132.504mil  T         90.00 10K            
+R28        0603R                 2162mil       2134mil       2162mil       2134mil   2193.496mil       2134mil  T        180.00 2K7            
+R27        0603R                 1655mil       2221mil       1655mil       2221mil       1655mil   2252.496mil  T        270.00 10K            
+CN13       MOLEX_47590001         392mil   -2083.26mil        392mil      -2037mil    443.181mil      -2037mil  T        360.00 475900001      
+CN1        Molex_1050170001       1500mil    2938.15mil       1500mil       2885mil   1551.181mil       2885mil  T        180.00 1050170001     
+U3         SOT-23-5L             1585mil       2371mil       1585mil       2371mil    1531.85mil   2408.402mil  T          0.00 LD3985M33R     
+U2         LQFP48_0R5_7x7         950mil       2450mil        950mil       2450mil    782.677mil   2558.268mil  T        270.00 STM32F103CBT6  
+U7         SOT-23-5L         1559.496mil       1506mil   1559.496mil       1506mil   1522.094mil    1452.85mil  T         90.00 TSV631AILT     
+X3         OSC_2SM_3R2x2R5       1053mil        -88mil       1053mil        -88mil   1090.402mil        -88mil  T        180.00 NX3225GD-8.000M-EXS00A-CG04874[N/A]
+X2         XTAL_2SM_3R2X1R5        758mil        -65mil        758mil        -65mil    807.213mil        -65mil  T        180.00 NX3215SA-32.768KHZ-EXS00A-MU00525
+U1         SOT23-6L              1513mil       2714mil       1513mil       2714mil   1550.402mil   2761.244mil  T        270.00 USBLC6-2SC6    
+U10        SOT23-6L           930.315mil       -899mil    930.315mil       -899mil    977.559mil   -936.402mil  T        180.00 USBLC6-4SC6    
+U12        SOT-23-5L              785mil      -1892mil        785mil      -1892mil    747.598mil   -1945.15mil  T         90.00 STMPS2151STR   
+U8         LQFP144_0R5_SKT        954mil        600mil        954mil        600mil    609.512mil    181.693mil  T        360.00 MCU_LQFP144    
+U4         SOIC8_1R27_4R9X6       1933mil       2209mil       1933mil       2209mil   1837.528mil       2284mil  T        360.00 ST890CDR       
+U6         DFN6_0R95_3x3_TP       1417mil       1504mil       1417mil       1504mil   1454.402mil   1555.182mil  T        180.00 LD39050PU33R   
+U5         SOT-223                510mil       1711mil        510mil       1711mil        385mil       1804mil  T          0.00 LD1117S50TR    
+SB16       SB_0603                840mil      -1145mil        840mil      -1145mil        840mil   -1178.75mil  T        270.00 Open           
+SB182      SB_0603                 -8mil      -1500mil         -8mil      -1500mil     -41.75mil      -1500mil  B        180.00 Closed         
+SB183      SB_0603                 -8mil      -1600mil         -8mil      -1600mil     -41.75mil      -1600mil  B        180.00 Closed         
+SB153      SB_0603            401.945mil    251.827mil    401.945mil    251.827mil    435.695mil    251.827mil  B        360.00 Circuit Breaker
+SB154      SB_0603            401.945mil    192.827mil    401.945mil    192.827mil    435.695mil    192.827mil  B        360.00 Circuit Breaker
+SB129      SB_0603               1502mil        853mil       1502mil        853mil    1468.25mil        853mil  B        180.00 Circuit Breaker
+SB156      SB_0603            779.701mil        137mil    779.701mil        137mil    813.451mil        137mil  B        360.00 Closed         
+SB124      SB_0603                570mil       1164mil        570mil       1164mil        570mil    1130.25mil  B        270.00 Circuit Breaker
+SB123      SB_0603                511mil       1164mil        511mil       1164mil        511mil    1130.25mil  B        270.00 Circuit Breaker
+SB149      SB_0603           1072.701mil        305mil   1072.701mil        305mil   1072.701mil     338.75mil  B         90.00 Closed         
+SB132      SB_0603            668.567mil     891.75mil    668.567mil     891.75mil    668.567mil        858mil  B        270.00 Closed         
+SB133      SB_0603                728mil     891.75mil        728mil     891.75mil        728mil        858mil  B        270.00 Closed         
+SB125      SB_0603            628.417mil       1164mil    628.417mil       1164mil    628.417mil    1197.75mil  B         90.00 Circuit Breaker
+SB3        SB_0603               1200mil       1519mil       1200mil       1519mil       1200mil    1485.25mil  T        270.00 Closed         
+SB1        SB_0603               1939mil       2360mil       1939mil       2360mil    1905.25mil       2360mil  T        180.00 Open           
+SB5        SB_0603               1200mil    1366.25mil       1200mil    1366.25mil       1200mil       1400mil  T         90.00 Closed         
+SB6        SB_0603               1141mil    1366.25mil       1141mil    1366.25mil       1141mil       1400mil  T         90.00 Closed         
+SB107      SB_0603                843mil       2716mil        843mil       2716mil        843mil    2749.75mil  B         90.00 Open           
+SB112      SB_0603               1238mil       2236mil       1238mil       2236mil    1271.75mil       2236mil  B        360.00 Closed         
+SB109      SB_0603                424mil       2600mil        424mil       2600mil     390.25mil       2600mil  B        180.00 Open           
+SB108      SB_0603                176mil       2600mil        176mil       2600mil     142.25mil       2600mil  B        180.00 Closed         
+SB106      SB_0603                424mil       2700mil        424mil       2700mil     390.25mil       2700mil  B        180.00 Open           
+SB105      SB_0603                176mil       2700mil        176mil       2700mil     142.25mil       2700mil  B        180.00 Closed         
+SB104      SB_0603                424mil       2800mil        424mil       2800mil     390.25mil       2800mil  B        180.00 Open           
+SB103      SB_0603                176mil       2800mil        176mil       2800mil     142.25mil       2800mil  B        180.00 Closed         
+SB102      SB_0603                424mil       2900mil        424mil       2900mil     390.25mil       2900mil  B        180.00 Open           
+SB101      SB_0603                176mil       2900mil        176mil       2900mil     142.25mil       2900mil  B        180.00 Closed         
+SB110      SB_0603               1238mil       2460mil       1238mil       2460mil    1204.25mil       2460mil  B        180.00 Closed         
+SB111      SB_0603                974mil       2252mil        974mil       2252mil     940.25mil       2252mil  B        180.00 Closed         
+SB17       SB_0603               1556mil      -1145mil       1556mil      -1145mil       1556mil   -1178.75mil  T        270.00 Open           
+R41        0603R                  855mil       -447mil        855mil       -447mil        855mil   -478.496mil  T         90.00 10K            
+R65        0603R                  886mil      -1742mil        886mil      -1742mil        886mil  -1773.496mil  T         90.00 270            
+R66        0603R              944.684mil  -1742.001mil    944.684mil  -1742.001mil    944.684mil  -1773.497mil  T         90.00 10K            
+R67        0603R                 1689mil      -1742mil       1689mil      -1742mil       1689mil  -1773.496mil  T         90.00 270            
+R49        0603R                 1108mil       -801mil       1108mil       -801mil   1076.504mil       -801mil  T        360.00 12K1           
+R50        0603R                 1108mil       -862mil       1108mil       -862mil   1076.504mil       -862mil  T        360.00 50             
+R51        0603R                 1108mil       -936mil       1108mil       -936mil   1076.504mil       -936mil  T        360.00 50             
+R45        0603R                 1150mil       -447mil       1150mil       -447mil       1150mil   -478.496mil  T         90.00 33             
+R42        0603R                  973mil       -447mil        973mil       -447mil        973mil   -478.496mil  T         90.00 33             
+R39        0603R                  736mil       -447mil        736mil       -447mil        736mil   -415.504mil  T        270.00 10K            
+R33        0603R                 1522mil       1366mil       1522mil       1366mil       1522mil   1397.496mil  T        270.00 200K           
+R69        0603R                  625mil      -1914mil        625mil      -1914mil        625mil  -1945.496mil  T         90.00 22K            
+R68        0603R                  684mil      -1914mil        684mil      -1914mil        684mil  -1945.496mil  T         90.00 47K            
+R64        0603R              783.005mil  -1742.001mil    783.005mil  -1742.001mil    783.005mil  -1773.497mil  T         90.00 330            
+R44        0603R                 1091mil       -447mil       1091mil       -447mil       1091mil   -415.504mil  T        270.00 10K            
+R62        0603R                  419mil      -1753mil        419mil      -1753mil        419mil  -1784.496mil  T         90.00 430K           
+R63        0603R                  478mil      -1753mil        478mil      -1753mil        478mil  -1721.504mil  T        270.00 620K           
+R72        0603R              944.684mil      -1913mil    944.684mil      -1913mil    944.684mil  -1944.496mil  T         90.00 10K            
+R34        0603R                 1610mil       1366mil       1610mil       1366mil       1610mil   1397.496mil  T        270.00 10K            
+R71        0603R                  886mil      -1914mil        886mil      -1914mil        886mil  -1882.504mil  T        270.00 47K            
+R61        0603R                  311mil      -1753mil        311mil      -1753mil        311mil  -1784.496mil  T         90.00 620            
+R36        0603R                  402mil        373mil        402mil        373mil    433.496mil        373mil  T        180.00 10K            
+R38        0603R                  788mil         35mil        788mil         35mil        788mil      3.504mil  T         90.00 0              
+R37        0603R                  729mil      35.25mil        729mil      35.25mil        729mil      3.754mil  T         90.00 0              
+R58        0603R                 -100mil      -1742mil       -100mil      -1742mil       -100mil  -1773.496mil  T         90.00 220K           
+R59        0603R                  -41mil      -1742mil        -41mil      -1742mil        -41mil  -1773.496mil  T         90.00 330            
+R60        0603R                   77mil      -1742mil         77mil      -1742mil         77mil  -1773.496mil  T         90.00 100            
+R21        0603R                 2162mil       2360mil       2162mil       2360mil   2130.504mil       2360mil  T        360.00 1K             
+R29        0603R                 1648mil       1962mil       1648mil       1962mil       1648mil   1993.496mil  T        270.00 1K             
+R11        0603R                 1352mil       2698mil       1352mil       2698mil       1352mil   2729.496mil  T        270.00 100K           
+R52        0603R                  790mil       -861mil        790mil       -861mil    821.496mil       -861mil  T        180.00 50             
+R9         0603R                 1411mil       2698mil       1411mil       2698mil       1411mil   2666.504mil  T         90.00 1K5            
+R16        0603R             1756.701mil       2601mil   1756.701mil       2601mil   1756.701mil   2569.504mil  T         90.00 36K            
+R15        0603R             1697.701mil       2601mil   1697.701mil       2601mil   1697.701mil   2632.496mil  T        270.00 100            
+R12        0603R             1815.701mil       2601mil   1815.701mil       2601mil   1815.701mil   2632.496mil  T        270.00 10K            
+R18        0603R                 -300mil       2450mil       -300mil       2450mil       -300mil   2481.496mil  T        270.00 [N/A]          
+R14        0603R                 2029mil       2601mil       2029mil       2601mil       2029mil   2632.496mil  T        270.00 0              
+R13        0603R                 1910mil       2601mil       1910mil       2601mil       1910mil   2569.504mil  T         90.00 100            
+R17        0603R                 1969mil       2601mil       1969mil       2601mil       1969mil   2569.504mil  T         90.00 100            
+R26        0603R                 1117mil       2184mil       1117mil       2184mil       1117mil   2215.496mil  T        270.00 100            
+R24        0603R                  713mil   2304.701mil        713mil   2304.701mil        713mil   2273.205mil  T         90.00 4K7            
+R25        0603R                  654mil   2304.701mil        654mil   2304.701mil        654mil   2273.205mil  T         90.00 4K7            
+R20        0603R                 1240mil       2420mil       1240mil       2420mil   1208.504mil       2420mil  T        360.00 100            
+R5         0603R                  842mil       2716mil        842mil       2716mil        842mil   2684.504mil  T         90.00 100K           
+R23        0603R                   50mil       2200mil         50mil       2200mil     18.504mil       2200mil  T        360.00 22             
+R22        0603R                   50mil       2295mil         50mil       2295mil     18.504mil       2295mil  T        360.00 22             
+R19        0603R                   50mil       2400mil         50mil       2400mil     18.504mil       2400mil  T        360.00 22             
+R3         0603R                  666mil       2716mil        666mil       2716mil        666mil   2747.496mil  T        270.00 10K[N/A]       
+R10        0603R                   50mil       2600mil         50mil       2600mil     18.504mil       2600mil  T        360.00 22             
+R4         0603R                  725mil       2716mil        725mil       2716mil        725mil   2747.496mil  T        270.00 10K            
+R1         0603R                   50mil       2759mil         50mil       2759mil     81.496mil       2759mil  T        180.00 100[N/A]       
+R2         0603R                   50mil       2700mil         50mil       2700mil     18.504mil       2700mil  T        360.00 10K            
+R6         0603R                  960mil       2716mil        960mil       2716mil        960mil   2747.496mil  T        270.00 100K           
+R7         0603R                 1019mil       2716mil       1019mil       2716mil       1019mil   2684.504mil  T         90.00 4K7            
+R8         0603R                 1078mil       2716mil       1078mil       2716mil       1078mil   2747.496mil  T        270.00 2K7            
+R32        0603R                 1004mil       1824mil       1004mil       1824mil       1004mil   1792.504mil  T         90.00 510            
+LD7        0603D-R                242mil      -1750mil        242mil      -1750mil        242mil  -1783.465mil  T        270.00 Red            
+LD5        0603D-R               2160mil       2294mil       2160mil       2294mil   2193.465mil       2294mil  T        360.00 Red            
+LD6        0603D-G           1451.039mil   1959.328mil   1451.039mil   1959.328mil   1451.039mil   1925.863mil  T        270.00 Green          
+LD4        HSMF-A201             1940mil       2841mil       1940mil       2841mil   1969.528mil   2900.055mil  T        270.00 LD_BICOLOR_CMS 
+LD1        0603D-G               1004mil       1960mil       1004mil       1960mil       1004mil   1926.535mil  T        270.00 Green          
+L1         0603L                 1382mil       -298mil       1382mil       -298mil       1382mil     -270.5mil  T         90.00 BEAD           
+JP6        HDR_1x2_2R54_V_M_S       1385mil       -422mil       1435mil       -422mil       1435mil       -422mil  T        180.00                
+JP5        HDR_1x2_2R54_V_M_S        950mil       1500mil       1000mil       1500mil       1000mil       1500mil  T        180.00                
+JP2        HDR_1x2_2R54_V_M_S       -300mil       2250mil       -300mil       2200mil       -300mil       2200mil  T         90.00                
+JP1        HDR_1x2_2R54_V_M_S        950mil       2920mil        900mil       2920mil        900mil       2920mil  T          0.00                
+D5         SOD-323               1422mil       2251mil       1422mil       2251mil   1374.756mil       2251mil  T        360.00 BAT60JFILM     
+D3         SOD-323               1422mil       2408mil       1422mil       2408mil   1374.756mil       2408mil  T        360.00 BAT60JFILM     
+D1         SOD-323                 34mil       2830mil         34mil       2830mil    -13.244mil       2830mil  T        360.00 BAT60JFILM     
+D2         SOD-323               1147mil       2738mil       1147mil       2738mil       1147mil   2690.756mil  T         90.00 BAT60JFILM     
+CN2        HDR_1x2_2R54_V_M       -300mil       2850mil       -300mil       2900mil       -300mil       2900mil  T        270.00                
+CN3        HDR_1x2_2R54_V_M       2200mil       2850mil       2200mil       2900mil       2200mil       2900mil  T        270.00                
+CN5        HDR_1x2_2R54_V_M_S    299.693mil       2250mil    299.693mil       2200mil    299.693mil       2200mil  T         90.00                
+CN4        HDR_1x4_2R54_V_M        300mil       2750mil        300mil       2900mil        300mil       2900mil  T        270.00 Header 4       
+CN6        HDR_1x6_2R54_V_M       -100mil       2450mil       -100mil       2700mil       -100mil       2700mil  T        270.00 Header 6X1     
+C4         0603C                 1639mil       2601mil       1639mil       2601mil       1639mil   2569.504mil  T         90.00 100nF          
+C43        0603C                 1466mil       -582mil       1466mil       -582mil   1434.504mil       -582mil  T        360.00 30pF           
+C48        0603C                  671mil       -861mil        671mil       -861mil    639.504mil       -861mil  T        360.00 100nF          
+C45        0603C                 1466mil       -732mil       1466mil       -732mil   1434.504mil       -732mil  T        360.00 30pF           
+C44        0603C                 1108mil       -742mil       1108mil       -742mil   1139.496mil       -742mil  T        180.00 100nF          
+C41        0603C                 1108mil       -547mil       1108mil       -547mil   1076.504mil       -547mil  T        360.00 1uF_X5R_0603   
+C46        TAN-A                  599mil       -785mil        599mil       -785mil        654mil       -785mil  T        360.00 10uF           
+C47        0603C                  790mil       -801mil        790mil       -801mil    758.504mil       -801mil  T        360.00 100nF          
+C40        0603C                  914mil       -447mil        914mil       -447mil        914mil   -415.504mil  T        270.00 100nF          
+C42        0603C                 1108mil       -606mil       1108mil       -606mil   1139.496mil       -606mil  T        180.00 470pF          
+C50        0603C                 1497mil      -1145mil       1497mil      -1145mil       1497mil  -1113.504mil  T        270.00 100nF          
+C54        TAN-A                  703mil      -2024mil        703mil      -2024mil        648mil      -2024mil  T        180.00 4.7uF          
+C27        0603C                 1491mil        945mil       1491mil        945mil   1459.504mil        945mil  T        360.00 100nF          
+C24        0603C                  573mil       1151mil        573mil       1151mil        573mil   1119.504mil  T         90.00 100nF          
+C33        0603C                  402mil        252mil        402mil        252mil    433.496mil        252mil  T        180.00 100nF          
+C32        0603C                 1491mil        295mil       1491mil        295mil   1459.504mil        295mil  T        360.00 100nF          
+C58        0603C                  916mil         37mil        916mil         37mil        916mil     68.496mil  B        270.00 100nF          
+C31        0603C                 1491mil        551mil       1491mil        551mil   1459.504mil        551mil  T        360.00 100nF          
+C29        0603C                 1491mil        748mil       1491mil        748mil   1459.504mil        748mil  T        360.00 100nF          
+C26        0603C                 1082mil       1140mil       1082mil       1140mil       1082mil   1108.504mil  T         90.00 100nF          
+C25        0603C                  891mil       1151mil        891mil       1151mil        891mil   1119.504mil  T         90.00 100nF          
+C28        0603C                  407mil        708mil        407mil        708mil    438.496mil        708mil  T        180.00 100nF          
+C30        0603C                  402mil        512mil        402mil        512mil    433.496mil        512mil  T        180.00 100nF          
+C39        0603C                 1324mil     -297.4mil       1324mil     -297.4mil       1324mil   -265.904mil  T        270.00 100nF          
+C34        0603C                 1208mil         65mil       1208mil         65mil   1239.496mil         65mil  T        180.00 100nF          
+C57        0603C              779.701mil         78mil    779.701mil         78mil    748.205mil         78mil  B        360.00 1uF_X5R_0603   
+C55        TAN-A                  425mil       1185mil        425mil       1185mil        425mil       1130mil  B        270.00 2.2uF_X7R      
+C53        0603C                 1830mil      -1742mil       1830mil      -1742mil       1830mil  -1710.504mil  T        270.00 100nF          
+C38        0603C                 1091mil       -214mil       1091mil       -214mil       1091mil   -182.504mil  T        270.00 4.3pF[N/A]     
+C37        0603C                 1016mil       -213mil       1016mil       -213mil       1016mil   -181.504mil  T        270.00 4.3pF[N/A]     
+C36        0603C                  807mil       -168mil        807mil       -168mil        807mil   -136.504mil  T        270.00 2pF            
+C35        0603C                  709mil       -168mil        709mil       -168mil        709mil   -136.504mil  T        270.00 2pF            
+C52        0603C                   18mil      -1742mil         18mil      -1742mil         18mil  -1710.504mil  T        270.00 [N/A]          
+C19        0603C                 1259mil       1519mil       1259mil       1519mil       1259mil   1550.496mil  T        270.00 100nF          
+C22        0603C                 1396mil       1366mil       1396mil       1366mil       1396mil   1334.504mil  T         90.00 100nF          
+C20        0603C                 1318mil       1519mil       1318mil       1519mil       1318mil   1487.504mil  T         90.00 1uF_X5R_0603   
+C23        0603C                 1455mil       1366mil       1455mil       1366mil       1455mil   1397.496mil  T        270.00 1uF_X5R_0603   
+C11        0603C                 2162mil       2193mil       2162mil       2193mil   2193.496mil       2193mil  T        180.00 100nF          
+C16        TAN-A                 1735mil       2219mil       1735mil       2219mil       1735mil       2274mil  T         90.00 4.7uF          
+C18        TAN-A                  848mil       1712mil        848mil       1712mil        793mil       1712mil  T        180.00 10uF           
+C17        TAN-B                  173mil       1651mil        173mil       1651mil    234.024mil       1651mil  T        360.00 10uF(25V)      
+C3         0603C                 1240mil       2558mil       1240mil       2558mil   1271.496mil       2558mil  T        180.00 100nF          
+C13        0603C                 1058mil       2184mil       1058mil       2184mil       1058mil   2152.504mil  T         90.00 100nF          
+C12        0603C                  890mil       2184mil        890mil       2184mil        890mil   2152.504mil  T         90.00 100nF          
+C1         0603C                  784mil       2716mil        784mil       2716mil        784mil   2747.496mil  T        270.00 100nF          
+C8         0603C                 1696mil       2377mil       1696mil       2377mil       1696mil   2345.504mil  T         90.00 100nF          
+C15        0603C                 1596mil       2221mil       1596mil       2221mil       1596mil   2189.504mil  T         90.00 10nF_X7R_0603  
+C10        0603C                 1438mil       2168mil       1438mil       2168mil   1406.504mil       2168mil  T        360.00 100nF          
+C9         0603C                 1755mil       2377mil       1755mil       2377mil       1755mil   2408.496mil  T        270.00 1uF_X5R_0603   
+C14        0603C                 1537mil       2221mil       1537mil       2221mil       1537mil   2189.504mil  T         90.00 1uF_X5R_0603   
+C2         0603C                  901mil       2716mil        901mil       2716mil        901mil   2747.496mil  T        270.00 100nF          
+C5         0603C                  517mil       2508mil        517mil       2508mil    548.496mil       2508mil  T        180.00 10pF           
+C6         0603C                  517mil       2432mil        517mil       2432mil    548.496mil       2432mil  T        180.00 10pF           
+X1         OSC_2SM_3R2x2R5        642mil       2470mil        642mil       2470mil        642mil   2432.598mil  T         90.00 NX3225GD-8.000M-EXS00A-CG04874
+R53        0603R                  790mil       -937mil        790mil       -937mil    821.496mil       -937mil  T        180.00 50             
+R43        0603R                 1032mil       -447mil       1032mil       -447mil       1032mil   -415.504mil  T        270.00 10K            
+C49        0603C                  899mil      -1145mil        899mil      -1145mil        899mil  -1113.504mil  T        270.00 100nF          
+C51        1206C                  834mil      -1306mil        834mil      -1306mil    774.945mil      -1306mil  T        360.00 TC1206KKX7RDBB102
+L2         0603L                  672mil       -936mil        672mil       -936mil      699.5mil       -936mil  T        360.00 BEAD           
+R56        0603R                  899mil      -1454mil        899mil      -1454mil        899mil  -1485.496mil  T         90.00 75             
+R57        0603R                 1501mil      -1454mil       1501mil      -1454mil       1501mil  -1485.496mil  T         90.00 75             
+R54        0603R                  781mil      -1454mil        781mil      -1454mil        781mil  -1422.504mil  T        270.00 75             
+R55        0603R              840.333mil      -1454mil    840.333mil      -1454mil    840.333mil  -1422.504mil  T        270.00 75             
+SB161      SB_0603               1450mil     35.701mil       1450mil     35.701mil       1450mil     69.451mil  B         90.00 Circuit Breaker
+SB166      SB_0603               1509mil     35.701mil       1509mil     35.701mil       1509mil     69.451mil  B         90.00 Circuit Breaker
+SB162      SB_0603               1680mil        -79mil       1680mil        -79mil       1680mil    -112.75mil  B        270.00 Closed         
+JP3        HDR_3x2_2R54_V_M       1500mil       1700mil       1400mil       1650mil       1400mil       1650mil  T          0.00 Header 3X2     
+R31        0603R                  878mil       1824mil        878mil       1824mil        878mil   1792.504mil  T         90.00 680            
+R30        0603R              750.748mil   1823.968mil    750.748mil   1823.968mil    750.748mil   1792.473mil  T         90.00 1K             
+SB139      SB_0603             402.25mil        427mil     402.25mil        427mil        436mil        427mil  B        360.00 Closed         
+U9         QFN24_0R5_4X4          950mil   -674.315mil        950mil   -674.315mil   1024.803mil   -723.528mil  T        180.00 LAN8742A-CZ-TR 
+LD8        0603D-G            719.005mil  -1740.001mil    719.005mil  -1740.001mil    719.005mil  -1773.466mil  T        270.00 Green          
+B2         PB-6X6mm-Black        2029mil      -1953mil       2029mil      -1953mil   1858.724mil  -2041.583mil  T        180.00 TD-0341 [RESET/Black]
+B1         PB-6X6mm-Blue         -122mil      -1953mil       -122mil      -1953mil   -292.276mil  -2041.583mil  T        180.00 USER (Blue)    
+X4         XTAL_2SM_5R0X3R2       1342mil       -657mil       1342mil       -657mil       1342mil   -582.197mil  T        270.00 X53T-C20SSA-25.000MHz
+C21        0603C                 1023mil       1366mil       1023mil       1366mil       1023mil   1397.496mil  T        270.00 4.7uF_X5R_0603 
+R73        0603R                 1634mil        373mil       1634mil        373mil   1602.504mil        373mil  B        360.00 100K           
+R70        0603R                  236mil      -1915mil        236mil      -1915mil        236mil  -1946.496mil  T         90.00 1K5            
+SB2        SB_0603               1141mil       1520mil       1141mil       1520mil       1141mil    1553.75mil  T         90.00 Closed         
+SB142      SB_0603               1634mil        432mil       1634mil        432mil    1667.75mil        432mil  B        360.00 Open           
+SB152      SB_0603               1634mil        314mil       1634mil        314mil    1667.75mil        314mil  B        360.00 Open           
+SB8        SB_0603               1024mil         36mil       1024mil         36mil       1024mil       2.25mil  T        270.00 Open           
+SB9        SB_0603               1083mil         36mil       1083mil         36mil       1083mil       2.25mil  T        270.00 Open           
+T1         SOT-23                1736mil       2731mil       1736mil       2731mil   1697.417mil    2691.63mil  T          0.00 9013           
+CN14       RJ45_KRJ-CB4.2GYZNL       1319mil      -1835mil       1319mil      -1835mil   1459.551mil  -1730.669mil  T          0.00 KRJ-CB4.2GYZNL 
+C56        TAN-A                 1523mil        932mil       1523mil        932mil       1468mil        932mil  B        180.00 2.2uF_X7R      
+CN12       HDR_2x36_2R54_V_M       2150mil         49mil       2100mil       1799mil       2100mil       1799mil  T        270.00 Header 36X2    
+CN11       HDR_2x36_2R54_V_M       -250mil         50mil       -300mil       1800mil       -300mil       1800mil  T        270.00 Header 36X2    
+SB187      SB_0603                151mil  -1752.937mil        151mil  -1752.937mil        151mil  -1719.187mil  B         90.00 Closed         
+SB121      SB_0603               1522mil    1143.75mil       1522mil    1143.75mil       1522mil     1177.5mil  B         90.00 Closed         
+SB122      SB_0603            1612.75mil    1143.75mil    1612.75mil    1143.75mil    1612.75mil     1177.5mil  B         90.00 Open           
+SB180      SB_0603               1529mil       -672mil       1529mil       -672mil    1495.25mil       -672mil  B        180.00 Open           
+LD3        0603D-R                751mil       1960mil        751mil       1960mil        751mil   1926.535mil  T        270.00 Red            
+
