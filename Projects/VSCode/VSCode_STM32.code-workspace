@@ -4,5 +4,19 @@
 			"name": "000_LED_Blink",
 			"path": "000_LED_Blink"
 		}
-	]
+	],
+	"settings": {
+		"files.associations": {
+			"stm32f4xx_nucleo_144.h": "c",
+			"stm32f4xx_hal.h": "c",
+			"stm32f4xx_hal_conf.h": "c",
+			"stm32f4xx_hal_rcc.h": "c",
+			"atomic": "c",
+			"random": "c",
+			"*.tcc": "c",
+			"chrono": "c",
+			"cstdint": "c"
+		},
+		"cortex-debug.variableUseNaturalFormat": false
+	}
 }
