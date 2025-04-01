@@ -1,8 +1,8 @@
 {
 	"folders": [
 		{
-			"name": "000_LED_Blink",
-			"path": "000_LED_Blink"
+			"name": "002_Bootloader_STM32F446ZET6",
+			"path": "002_Bootloader_STM32F446ZET6"
 		}
 	],
 	"settings": {
@@ -15,8 +15,10 @@
 			"random": "c",
 			"*.tcc": "c",
 			"chrono": "c",
-			"cstdint": "c"
+			"cstdint": "c",
+			"main.h": "c"
 		},
-		"cortex-debug.variableUseNaturalFormat": false
+		"cortex-debug.variableUseNaturalFormat": false,
+		"microbit.comPort": "3"
 	}
 }
