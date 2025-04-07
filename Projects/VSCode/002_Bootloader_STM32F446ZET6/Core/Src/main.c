@@ -20,7 +20,6 @@
 #include "main.h"
 #include "crc.h"
 #include "usart.h"
-#include "usb_otg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -75,29 +74,11 @@ int main( void )
   MX_GPIO_Init( );
   MX_USART3_UART_Init( );
   MX_USART2_UART_Init( );
-  MX_USB_OTG_FS_PCD_Init( );
   MX_CRC_Init( );
 
-  printf( "BL_DEBUG_MSG: Bootloader starting... \r\n" );
-
-  /* Based on state of user btn, decide where to go next */
-  GPIO_PinState userBtnState = HAL_GPIO_ReadPin( USER_Btn_GPIO_Port, USER_Btn_Pin );
-  if( userBtnState == GPIO_PIN_SET )
-  {
-    /* User button is pressed, go into bootloader mode */
-    printf( "BL_DEBUG_MSG: User button state is %d, going into bootloader mode... \r\n", userBtnState );
-
-    BootloaderUARTReadData( );
-
-  }
-  else
-  {
-    /* User button is not pressed, jump to user application */
-    printf( "BL_DEBUG_MSG: User button state is %d, jumping to user application... \r\n", userBtnState );
-
-    BootloaderJumpToUserApp( );
+  /* Start Bootloader program */
+  BL_Start( );
   
-  }
 }
 
 /* USER CODE END 0 */

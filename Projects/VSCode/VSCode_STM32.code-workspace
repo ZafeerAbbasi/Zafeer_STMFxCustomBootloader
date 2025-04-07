@@ -3,6 +3,9 @@
 		{
 			"name": "002_Bootloader_STM32F446ZET6",
 			"path": "002_Bootloader_STM32F446ZET6"
+		},
+		{
+			"path": "003_UserApp_STM32F446ZET6"
 		}
 	],
 	"settings": {

@@ -31,6 +31,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
 
 /* USER CODE END Includes */
 
@@ -41,6 +45,9 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+extern UART_HandleTypeDef huart3;   // UART handle for USART3
+extern UART_HandleTypeDef huart2;   // UART handle for USART2
+extern CRC_HandleTypeDef hcrc;      // CRC handle
 
 /* USER CODE END EC */
 
@@ -91,6 +98,15 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+#define DEBUG_PRINT  // Comment this line to disable prints
+
+
+
+#ifdef DEBUG_PRINT
+    #define DEBUG_PRINTF(...)   printf(__VA_ARGS__)
+#else
+    #define DEBUG_PRINTF(...)   // Nothing
+#endif
 
 /* USER CODE END Private defines */
 
