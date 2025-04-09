@@ -1,3 +1,6 @@
-**.obj
-**.elf
+# Ignore all .obj and .elf files
+*.obj
+*.elf
+
+# Ignore all folders named 'build' at any level
 **/build/
