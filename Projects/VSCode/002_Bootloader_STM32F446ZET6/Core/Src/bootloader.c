@@ -71,7 +71,7 @@ static void bl_SendData( uint8_t *pBuffer, uint16_t uiLen );
 
 static const char *bl_GetVersion( void );
 static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_t hostCRC );
-static bool bl_GetUniqueID( uint8_t *pBuffer );
+static BOOL bl_GetUniqueID( uint8_t *pBuffer );
 
 /* USER CODE END PFP */
 
@@ -370,7 +370,8 @@ static void bl_HandleGetRdpStatus( uint8_t *pRxBuffer )
 static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
 {
     uint8_t bl_totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
-    uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+    uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 
+    BL_eAddrValidStatus_t bl_bIsAddrValid = ADDR_INVALID; // Variable to check if address is valid
 
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_go_to_addr \r\n" );
 
@@ -379,10 +380,12 @@ static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
     if ( bl_crcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
-
     }
     else
     {
+       /* CRC Success, send ACK */
+       bl_SendAck( 0 ); // 0 because there is no reply to this command
+
        
     }
 }
@@ -692,12 +695,12 @@ static const char *bl_GetVersion( void )
  * @brief Bootloader function to get unique ID.
  * 
  * @param pBuffer Pointer to data buffer
- * @retval true Operation successful 
- * @retval false Operation failed
+ * @retval TRUE Operation successful 
+ * @retval FALSE Operation failed
  */
-static bool bl_GetUniqueID( uint8_t *pBuffer )
+static BOOL bl_GetUniqueID( uint8_t *pBuffer )
 {
-    bool retval = true;
+    BOOL retval = TRUE;
     uint32_t bl_uniqueID[ 3 ] = { 0 }; // Variable to store unique ID
     
     /* Unique ID is 96 bits, so we need to fit this into a 8 bit array*/
@@ -711,12 +714,12 @@ static bool bl_GetUniqueID( uint8_t *pBuffer )
         if ( bl_uniqueID[ i ] == 0x00000000 || bl_uniqueID[ i ] == 0xFFFFFFFF )
         {
             /* Unique ID is invalid */
-            retval = false;
+            retval = FALSE;
             break;
         }
     }
 
-    if( retval != false )
+    if( retval != FALSE )
     {
         /* Copy the Unique ID into the buffer */
         pBuffer[ 0 ] = ( uint8_t ) ( ( bl_uniqueID[ 0 ] >> 24 ) & 0xFF );
@@ -732,7 +735,7 @@ static bool bl_GetUniqueID( uint8_t *pBuffer )
         pBuffer[ 10 ] = ( uint8_t ) ( ( bl_uniqueID[ 2 ] >> 8 ) & 0xFF );
         pBuffer[ 11 ] = ( uint8_t ) (   bl_uniqueID[ 2 ] & 0xFF );
 
-        retval = true;
+        retval = TRUE;
     }
 
     return retval;

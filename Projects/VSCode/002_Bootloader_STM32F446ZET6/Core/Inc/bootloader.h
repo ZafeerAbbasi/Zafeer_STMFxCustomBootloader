@@ -34,8 +34,14 @@ extern "C" {
 /* Typedefs ------------------------------------------------------------------*/
 /* USER CODE BEGIN Typedefs */
 
+typedef enum BL_eAddrValidStatus_t
+{
+  ADDR_VALID = 0,
+  ADDR_INVALID,
+} BL_eAddrValidStatus_t;
+
 /* Bootloader Command Codes */
-typedef enum
+typedef enum BL_eCommandCode_t
 {
 	BL_CMD_GET_VER = 0x51,
 	BL_CMD_GET_HELP,
@@ -53,7 +59,7 @@ typedef enum
 
 
 /* Bootloader CRC Status */
-typedef enum
+typedef enum BL_eCRCStatus_t
 {
 	CRC_SUCCESS = 0,
 	CRC_FAIL,

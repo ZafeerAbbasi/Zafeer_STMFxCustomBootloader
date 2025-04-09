@@ -105,7 +105,9 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 #define DEBUG_PRINT  // Comment this line to disable prints
-
+#define BOOL bool
+#define TRUE 1
+#define FALSE 0
 
 
 #ifdef DEBUG_PRINT
