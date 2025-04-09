@@ -41,6 +41,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 uint8_t bl_aRxBuffer[ 200 ] = { 0 };    // Buffer to store received data
+FLASH_OBProgramInitTypeDef bl_hOptionbytes; // Option bytes structure
 
 /* USER CODE END PV */
 
@@ -70,6 +71,7 @@ static void bl_SendData( uint8_t *pBuffer, uint16_t uiLen );
 
 static const char *bl_GetVersion( void );
 static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_t hostCRC );
+static bool bl_GetUniqueID( uint8_t *pBuffer );
 
 /* USER CODE END PFP */
 
@@ -84,30 +86,24 @@ static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_
  */
 void BL_Start( void )
 {
-
     DEBUG_PRINTF( "BL_DEBUG_MSG: Bootloader starting... \r\n" );
 
     /* Based on state of user btn, decide where to go next */
     GPIO_PinState uiUserBtnState = HAL_GPIO_ReadPin( USER_Btn_GPIO_Port, USER_Btn_Pin );
     if( uiUserBtnState == GPIO_PIN_SET )
     {
-        
         /* User button is pressed, go into bootloader mode */
         DEBUG_PRINTF( "BL_DEBUG_MSG: User button state is %d, going into bootloader mode... \r\n", uiUserBtnState );
 
         bl_ProcessCommand( );
-
     }
     else
-    {
-        
+    {        
         /* User button is not pressed, jump to user application */
         DEBUG_PRINTF( "BL_DEBUG_MSG: User button state is %d, jumping to user application... \r\n", uiUserBtnState );
 
         bl_JumpToUserApp( );
-
     }
-
 }
 
 
@@ -118,7 +114,6 @@ void BL_Start( void )
  */
 static void bl_ProcessCommand( void )
 {
-  
     uint8_t bl_rxCommandCode = 0; // Command code received
     uint8_t bl_rxDataLenth = 0; // Length of data received
     memset( bl_aRxBuffer, 0, sizeof( bl_aRxBuffer ) ); // Clear the RX buffer
@@ -127,7 +122,6 @@ static void bl_ProcessCommand( void )
 
     while( 1 )
     {
-
         /* Clear the RX Buffer */
         memset( bl_aRxBuffer, 0, sizeof( bl_aRxBuffer ) ); 
 
@@ -207,9 +201,7 @@ static void bl_ProcessCommand( void )
                                                     ( uint8_t * ) &bl_aRxBuffer );
                 break;
         }
-
     }
-
 }
 
 
@@ -228,27 +220,21 @@ static void bl_HandleGetVer( uint8_t *pRxBuffer)
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_ver \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4,  bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
-        
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
-
     }
     else
-    {
-        
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+    {       
+       
 
         bl_version = bl_GetVersion( ); // Get bootloader version
         bl_SendAck( strlen( bl_version ) ); // Send ACK with length of next message
 
         DEBUG_PRINTF( "BL_DEBUG_MSG: Bootloader version: %s, Length: %d \r\n", bl_version, strlen( bl_version ) );
         bl_SendData( ( uint8_t * )bl_version, strlen( bl_version ) ); // Send bootloader version to host
-
     }
-
 }
 
 
@@ -286,23 +272,18 @@ static void bl_HandleGetHelp( uint8_t *pRxBuffer )
     sprintf( bl_aSupportedCommandsBuff, bl_pSupportedCommandsText, bl_GetVersion( ) );
 
     /* Verify CRC */
-    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4,  bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
-        
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
-
     }
     else
     {
-        
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+       
         bl_SendAck( strlen( bl_aSupportedCommandsBuff ) ); // Send ACK with length of next message
 
         DEBUG_PRINTF( "BL_DEBUG_MSG: Supported commands: %s, Length: %d \r\n", bl_aSupportedCommandsBuff, strlen( bl_aSupportedCommandsBuff ) );
         bl_SendData( ( uint8_t * )bl_aSupportedCommandsBuff, strlen( bl_aSupportedCommandsBuff ) ); // Send supported commands to host
-
     }
 }
 
@@ -317,23 +298,31 @@ static void bl_HandleGetCid( uint8_t *pRxBuffer )
 {
     uint8_t bl_totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+    uint8_t bl_aUniqueID[ 12 ] = { 0 }; // Variable to store unique ID
 
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4,  bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
-    {
-        
+    { 
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
-
     }
     else
     {
-        
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+       
+        bl_SendAck( sizeof( bl_aUniqueID ) ); // Send ACK with length of next message
 
+        /* Get Unique ID */
+        bl_GetUniqueID( bl_aUniqueID );
+        DEBUG_PRINTF( "BL_DEBUG_MSG: Unique ID: %02X%02X%02X%02X %02X%02X%02X%02X %02X%02X%02X%02X \r\n", 
+                      bl_aUniqueID[ 0 ], bl_aUniqueID[ 1 ], bl_aUniqueID[ 2 ], 
+                      bl_aUniqueID[ 3 ], bl_aUniqueID[ 4 ], bl_aUniqueID[ 5 ],
+                      bl_aUniqueID[ 6 ], bl_aUniqueID[ 7 ], bl_aUniqueID[ 8 ],
+                      bl_aUniqueID[ 9 ], bl_aUniqueID[ 10 ], bl_aUniqueID[ 11 ] );
+
+        /* Send Unique ID to host */
+        bl_SendData( ( uint8_t * )bl_aUniqueID, sizeof( bl_aUniqueID ) ); // Send unique ID to host
     }
 }
 
@@ -349,22 +338,25 @@ static void bl_HandleGetRdpStatus( uint8_t *pRxBuffer )
     uint8_t bl_totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
 
-    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_rdp \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4,  bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
-        
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
-
     }
     else
     {
-        
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+        /* Get RDP Status */
+        HAL_FLASHEx_OBGetConfig( &bl_hOptionbytes );
 
+        /* Send ACK */
+        bl_SendAck( sizeof( bl_hOptionbytes.RDPLevel ) ); // Send ACK with length of next message
+        DEBUG_PRINTF( "BL_DEBUG_MSG: RDP Status: 0x%02X \r\n", ( uint8_t )bl_hOptionbytes.RDPLevel );
+
+        /* Send RDP Status to host */
+        bl_SendData( ( uint8_t * )&bl_hOptionbytes.RDPLevel, sizeof( bl_hOptionbytes.RDPLevel ) ); // Send RDP status to host
     }
 }
 
@@ -380,22 +372,18 @@ static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
     uint8_t bl_totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
 
-    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_go_to_addr \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4,  bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
-        
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
 
     }
     else
     {
-        
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
-
+       
     }
 }
 
@@ -408,6 +396,22 @@ static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
  */
 static void bl_HandleFlashErase( uint8_t *pRxBuffer )
 {
+    uint8_t bl_totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
+    uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+
+    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+
+    /* Verify CRC */
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4,  bl_hostCRC );
+    if ( bl_crcStatus != CRC_SUCCESS )
+    {
+        bl_SendNack( ); // Send NACK if CRC verification fails
+
+    }
+    else
+    {
+       
+    }
 }
 
 
@@ -419,6 +423,22 @@ static void bl_HandleFlashErase( uint8_t *pRxBuffer )
  */
 static void bl_HandleMemWrite( uint8_t *pRxBuffer )
 {
+    uint8_t bl_totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
+    uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+
+    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+
+    /* Verify CRC */
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
+    if ( bl_crcStatus != CRC_SUCCESS )
+    {
+        bl_SendNack( ); // Send NACK if CRC verification fails
+
+    }
+    else
+    {
+        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+    }
 }
 
 
@@ -439,16 +459,12 @@ static void bl_HandleEnRwProtect( uint8_t *pRxBuffer )
     BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
-        
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
 
     }
     else
     {
-        
         DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
-
     }
 }
 
@@ -461,6 +477,22 @@ static void bl_HandleEnRwProtect( uint8_t *pRxBuffer )
  */
 static void bl_HandleMemRead( uint8_t *pRxBuffer )
 {
+    uint8_t bl_totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
+    uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+
+    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+
+    /* Verify CRC */
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
+    if ( bl_crcStatus != CRC_SUCCESS )
+    {
+        bl_SendNack( ); // Send NACK if CRC verification fails
+
+    }
+    else
+    {
+        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+    }
 }
 
 
@@ -481,16 +513,12 @@ static void bl_HandleReadSectorStatus( uint8_t *pRxBuffer )
     BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
-        
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
 
     }
     else
     {
-        
         DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
-
     }
 }
 
@@ -512,16 +540,12 @@ static void bl_HandleOtpRead( uint8_t *pRxBuffer )
     BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
-        
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
 
     }
     else
     {
-        
         DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
-
     }
 }
 
@@ -543,16 +567,12 @@ static void bl_HandleDisRwProtect( uint8_t *pRxBuffer )
     BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
-        
         bl_SendNack( ); // Send NACK if CRC verification fails
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed \r\n" );
 
     }
     else
     {
-        
         DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
-
     }
 }
 
@@ -599,10 +619,12 @@ static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_
     if( bl_calculatedCRC != hostCRC )
     {
         retval = CRC_FAIL;
+        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed, Host CRC: 0x%08X, Calculated CRC: 0x%08X \r\n", ( uint8_t )hostCRC, ( uint8_t )bl_calculatedCRC );
     }
     else
     {
         retval = CRC_SUCCESS;
+        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success, Host CRC: 0x%08X, Calculated CRC: 0x%08X \r\n", ( uint8_t )hostCRC, ( uint8_t )bl_calculatedCRC );
     }
 
     return retval;
@@ -630,7 +652,7 @@ static void bl_SendAck( uint32_t nextMessageLength )
     bl_SendData( &bl_ackBuffArray[ 0 ], sizeof( bl_ackBuffArray ) );
 
     /* Print the bl_ackBuffArray to debug */
-    DEBUG_PRINTF( "BL_DEBUG_MSG: ACK Message: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x \r\n", 
+    DEBUG_PRINTF( "BL_DEBUG_MSG: ACK Message: 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X \r\n", 
                     bl_ackBuffArray[ 0 ], bl_ackBuffArray[ 1 ], bl_ackBuffArray[ 2 ], bl_ackBuffArray[ 3 ], bl_ackBuffArray[ 4 ] );
 }
 
@@ -662,6 +684,58 @@ static const char *bl_GetVersion( void )
     const char *bl_version = BOOTLOADER_VERSION_NUMBER; // Bootloader version
 
     return bl_version;
+}
+
+
+
+/**
+ * @brief Bootloader function to get unique ID.
+ * 
+ * @param pBuffer Pointer to data buffer
+ * @retval true Operation successful 
+ * @retval false Operation failed
+ */
+static bool bl_GetUniqueID( uint8_t *pBuffer )
+{
+    bool retval = true;
+    uint32_t bl_uniqueID[ 3 ] = { 0 }; // Variable to store unique ID
+    
+    /* Unique ID is 96 bits, so we need to fit this into a 8 bit array*/
+    bl_uniqueID[ 0 ] = LL_GetUID_Word0( );
+    bl_uniqueID[ 1 ] = LL_GetUID_Word1( );
+    bl_uniqueID[ 2 ] = LL_GetUID_Word2( );
+
+    /* Check if the Unique ID is valid */
+    for( uint8_t i = 0; i < 3; i++ )
+    {
+        if ( bl_uniqueID[ i ] == 0x00000000 || bl_uniqueID[ i ] == 0xFFFFFFFF )
+        {
+            /* Unique ID is invalid */
+            retval = false;
+            break;
+        }
+    }
+
+    if( retval != false )
+    {
+        /* Copy the Unique ID into the buffer */
+        pBuffer[ 0 ] = ( uint8_t ) ( ( bl_uniqueID[ 0 ] >> 24 ) & 0xFF );
+        pBuffer[ 1 ] = ( uint8_t ) ( ( bl_uniqueID[ 0 ] >> 16 ) & 0xFF );
+        pBuffer[ 2 ] = ( uint8_t ) ( ( bl_uniqueID[ 0 ] >> 8 ) & 0xFF );
+        pBuffer[ 3 ] = ( uint8_t ) (   bl_uniqueID[ 0 ] & 0xFF );
+        pBuffer[ 4 ] = ( uint8_t ) ( ( bl_uniqueID[ 1 ] >> 24 ) & 0xFF );
+        pBuffer[ 5 ] = ( uint8_t ) ( ( bl_uniqueID[ 1 ] >> 16 ) & 0xFF );
+        pBuffer[ 6 ] = ( uint8_t ) ( ( bl_uniqueID[ 1 ] >> 8 ) & 0xFF );
+        pBuffer[ 7 ] = ( uint8_t ) (   bl_uniqueID[ 1 ] & 0xFF );
+        pBuffer[ 8 ] = ( uint8_t ) ( ( bl_uniqueID[ 2 ] >> 24 ) & 0xFF );
+        pBuffer[ 9 ] = ( uint8_t ) ( ( bl_uniqueID[ 2 ] >> 16 ) & 0xFF );
+        pBuffer[ 10 ] = ( uint8_t ) ( ( bl_uniqueID[ 2 ] >> 8 ) & 0xFF );
+        pBuffer[ 11 ] = ( uint8_t ) (   bl_uniqueID[ 2 ] & 0xFF );
+
+        retval = true;
+    }
+
+    return retval;
 }
 
 

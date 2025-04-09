@@ -65,6 +65,11 @@ def close_the_file():
 
 
 #----------------------------- utilities----------------------------------------
+    
+def print_message_crc( data_buf ):
+    len = data_buf[0]
+    print( "   Message == > 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X" % (data_buf[0],data_buf[1],data_buf[2],data_buf[3],data_buf[4],data_buf[5]))
+    print( "   CRC     == > 0x%02X%02X%02X%02X" % ( data_buf[ len ], data_buf[ len - 1 ], data_buf[ len - 2 ], data_buf[ len - 3 ] ) )
 
 def word_to_byte(addr, index , lowerfirst):
     value = (addr >> ( 8 * ( index -1)) & 0x000000FF )
@@ -146,7 +151,6 @@ def Write_to_serial_port(value, *length):
         if (verbose_mode):
             value = bytearray(data)
             #print("   "+hex(value[0]), end='')
-            print("   "+"0x{:02x}".format(value[0]),end=' ')
         if(mem_write_active and (not verbose_mode)):
                 print("#",end=' ')
         ser.write(data)
@@ -172,13 +176,24 @@ def process_COMMAND_BL_GET_HELP(length):
 
 def process_COMMAND_BL_GET_CID(length):
     value = read_serial_port(length)
-    ci = (value[1] << 8 )+ value[0]
-    print("\n   Chip Id. : ",hex(ci))
+    data = bytearray(value).hex( ).upper( )
+    print('\n   Chip Identification Number: ',' '.join(data[i:i+8] for i in range(0, len(data), 8)))
 
 def process_COMMAND_BL_GET_RDP_STATUS(length):
     value = read_serial_port(length)
     rdp = bytearray(value)
-    print("\n   RDP Status : ",hex(rdp[0]))
+    rdp = hex(rdp[0])[2:].upper( )
+    rdp_type = ''
+
+    if( rdp == 'AA' ):
+        rdp_type = 'Read Protection Level 0'
+    elif( rdp == 'CC' ):
+        rdp_type = 'Read Protection Level 2'
+    else:
+        rdp_type = 'Read Protection Level 1'
+
+    
+    print("\n   RDP Status : 0x%s ( %s )" % ( rdp, rdp_type ) )
 
 def process_COMMAND_BL_GO_TO_ADDR(length):
     addr_status=0
@@ -310,7 +325,8 @@ def decode_menu_command_code(command):
         data_buf[4] = word_to_byte(crc32,3,1) 
         data_buf[5] = word_to_byte(crc32,4,1) 
 
-        
+        print_message_crc( data_buf=data_buf )
+
         Write_to_serial_port(data_buf[0],1)
         for i in data_buf[1:COMMAND_BL_GET_VER_LEN]:
             Write_to_serial_port(i,COMMAND_BL_GET_VER_LEN-1)
@@ -332,7 +348,8 @@ def decode_menu_command_code(command):
         data_buf[4] = word_to_byte(crc32,3,1) 
         data_buf[5] = word_to_byte(crc32,4,1) 
 
-        
+        print_message_crc( data_buf=data_buf )
+
         Write_to_serial_port(data_buf[0],1)
         for i in data_buf[1:COMMAND_BL_GET_HELP_LEN]:
             Write_to_serial_port(i,COMMAND_BL_GET_HELP_LEN-1)
@@ -351,7 +368,8 @@ def decode_menu_command_code(command):
         data_buf[4] = word_to_byte(crc32,3,1) 
         data_buf[5] = word_to_byte(crc32,4,1) 
 
-        
+        print_message_crc( data_buf=data_buf )
+
         Write_to_serial_port(data_buf[0],1)
         for i in data_buf[1:COMMAND_BL_GET_CID_LEN]:
             Write_to_serial_port(i,COMMAND_BL_GET_CID_LEN-1)
@@ -369,6 +387,8 @@ def decode_menu_command_code(command):
         data_buf[3] = word_to_byte(crc32,2,1)
         data_buf[4] = word_to_byte(crc32,3,1)
         data_buf[5] = word_to_byte(crc32,4,1)
+
+        print_message_crc( data_buf=data_buf )
         
         Write_to_serial_port(data_buf[0],1)
         
@@ -391,6 +411,8 @@ def decode_menu_command_code(command):
         data_buf[7] = word_to_byte(crc32,2,1) 
         data_buf[8] = word_to_byte(crc32,3,1) 
         data_buf[9] = word_to_byte(crc32,4,1) 
+
+        print_message_crc( data_buf=data_buf )
 
         Write_to_serial_port(data_buf[0],1)
         
@@ -418,6 +440,8 @@ def decode_menu_command_code(command):
         data_buf[5] = word_to_byte(crc32,2,1) 
         data_buf[6] = word_to_byte(crc32,3,1) 
         data_buf[7] = word_to_byte(crc32,4,1) 
+
+        print_message_crc( data_buf=data_buf )
 
         Write_to_serial_port(data_buf[0],1)
         
@@ -531,6 +555,8 @@ def decode_menu_command_code(command):
         data_buf[6] = word_to_byte(crc32,3,1) 
         data_buf[7] = word_to_byte(crc32,4,1) 
 
+        print_message_crc( data_buf=data_buf )
+
         Write_to_serial_port(data_buf[0],1)
         
         for i in data_buf[1:COMMAND_BL_EN_R_W_PROTECT_LEN]:
@@ -553,6 +579,8 @@ def decode_menu_command_code(command):
         data_buf[4] = word_to_byte(crc32,3,1) 
         data_buf[5] = word_to_byte(crc32,4,1) 
 
+        print_message_crc( data_buf=data_buf )
+
         Write_to_serial_port(data_buf[0],1)
         
         for i in data_buf[1:COMMAND_BL_READ_SECTOR_P_STATUS_LEN]:
@@ -573,6 +601,8 @@ def decode_menu_command_code(command):
         data_buf[4] = word_to_byte(crc32,3,1) 
         data_buf[5] = word_to_byte(crc32,4,1) 
 
+        print_message_crc( data_buf=data_buf )
+
         Write_to_serial_port(data_buf[0],1)
         
         for i in data_buf[1:COMMAND_BL_DIS_R_W_PROTECT_LEN]:
@@ -589,6 +619,8 @@ def decode_menu_command_code(command):
         # data_buf[3] = word_to_byte(crc32,2,1) 
         # data_buf[4] = word_to_byte(crc32,3,1) 
         # data_buf[5] = word_to_byte(crc32,4,1) 
+
+        print_message_crc( data_buf=data_buf )
 
         Write_to_serial_port(data_buf[0],1)
         
@@ -618,8 +650,8 @@ def read_bootloader_reply(command_code):
         #print("read uart:",ack) 
         if (a_array[0]== 0xA5):
             #CRC of last command was good .. received ACK and "len to follow"
-            len_to_follow = ( a_array[ -2 ] << 8 ) | a_array[ -1 ]
-            print("\n   CRC : SUCCESS Len :",len_to_follow)
+            len_to_follow = ( a_array[ -4 ] << 24 ) | ( a_array[ -3 ] << 16 ) | ( a_array[ -2 ] << 8 ) | a_array[ -1 ]
+            print("\n   ACK Recieved! Expecting Data with length: ",len_to_follow)
             #print("command_code:",hex(command_code))
             if (command_code) == COMMAND_BL_GET_VER :
                 process_COMMAND_BL_GET_VER(len_to_follow)
@@ -735,3 +767,4 @@ def check_flash_status():
 def protection_type():
     pass
 
+# 05 53 89 d2 29 75

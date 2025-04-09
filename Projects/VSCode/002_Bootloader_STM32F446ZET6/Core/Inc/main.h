@@ -31,10 +31,16 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+/* STM32-Specific includes */
+#include "stm32f4xx_ll_utils.h"
+
+/* Basic includes */
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 /* USER CODE END Includes */
 
