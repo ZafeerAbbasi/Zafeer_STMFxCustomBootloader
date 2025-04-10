@@ -227,8 +227,6 @@ static void bl_HandleGetVer( uint8_t *pRxBuffer)
     }
     else
     {       
-       
-
         bl_version = bl_GetVersion( ); // Get bootloader version
         bl_SendAck( strlen( bl_version ) ); // Send ACK with length of next message
 
@@ -372,6 +370,7 @@ static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
     uint8_t bl_totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t bl_hostCRC = *( ( uint32_t * ) ( pRxBuffer + bl_totalPacketLength - 4 ) ); // CRC is always the last 4 
     BL_eAddrValidStatus_t bl_bIsAddrValid = ADDR_INVALID; // Variable to check if address is valid
+    uint32_t bl_goAddress = *( ( uint32_t * ) ( pRxBuffer + 2 ) ); // Get the address to jump to
 
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_go_to_addr \r\n" );
 
@@ -387,6 +386,8 @@ static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
        We will send the host a confirmation of the validity of the address which will be 1 byte long */
        bl_SendAck( 1 );
 
+        /* Verify that address is valid */
+        
        
     }
 }
@@ -744,6 +745,17 @@ static BOOL bl_GetUniqueID( uint8_t *pBuffer )
 
 
 
+static BL_eAddrValidStatus_t bl_VerifyAddress( uint32_t address )
+{
+    BL_eAddrValidStatus_t retval = ADDR_INVALID;
+
+    /* Check if the address is valid */
+
+    return retval;
+}
+
+
+
 /**
  * @brief Bootloader function to jump to user application.
  * 
@@ -753,11 +765,13 @@ static void bl_JumpToUserApp( void )
 
     void ( *bl_pfnUserAppResetHandlerFunc ) ( void ); // Pointer to user application reset handler
 
-    uint32_t bl_msp = *( uint32_t * ) FLASH_SECTOR_1_BASE_ADDRESS;
+    /* The first 4 bytes of any program is the SRAM Base address, which is where the MSP
+        should point to should we jump to another application */
+    uint32_t bl_msp = *( uint32_t * ) USER_APPLICATION_BASE_ADDRESS; 
 
     /* Get the address of the user application reset handler which is 4 bytes from
     the Flash base address */
-    uint32_t bl_userAppResetHandlerAddress = *( uint32_t *) ( FLASH_SECTOR_1_BASE_ADDRESS + 4U );
+    uint32_t bl_userAppResetHandlerAddress = *( uint32_t *) ( USER_APPLICATION_BASE_ADDRESS + 4U );
 
     /* Cast the address to a function pointer */
     bl_pfnUserAppResetHandlerFunc = ( void ( * )( void ) ) bl_userAppResetHandlerAddress;

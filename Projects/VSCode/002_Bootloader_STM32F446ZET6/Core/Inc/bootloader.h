@@ -70,8 +70,16 @@ typedef enum BL_eCRCStatus_t
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN Private defines */
+
 /* Memory Addresses */
-#define FLASH_SECTOR_1_BASE_ADDRESS 0x08004000U
+#define USER_APPLICATION_BASE_ADDRESS	0x08006000U
+#define SRAM1_SIZE      	112*1024     // STM32F446RE has 112KB of SRAM1
+#define SRAM1_END          	(SRAM1_BASE + SRAM1_SIZE)
+#define SRAM2_SIZE         	16*1024      // STM32F446RE has 16KB of SRAM2
+#define SRAM2_END          	(SRAM2_BASE + SRAM2_SIZE)
+#define BKPSRAM_SIZE      	4*1024       // STM32F446RE has 4KB of Backup SRAM
+#define BKPSRAM_END       	(BKPSRAM_BASE + BKPSRAM_SIZE)
+
 
 /* Bootloader version 1.0.0 */
 #define BOOTLOADER_VERSION_NUMBER "1.0.0"
