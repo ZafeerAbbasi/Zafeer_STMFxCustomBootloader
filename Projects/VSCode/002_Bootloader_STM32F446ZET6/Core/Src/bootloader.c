@@ -376,15 +376,16 @@ static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_go_to_addr \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4,  bl_hostCRC );
+    BL_eCRCStatus_t bl_crcStatus = bl_VerifyCRC( pRxBuffer, bl_totalPacketLength - 4, bl_hostCRC );
     if ( bl_crcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
     }
     else
     {
-       /* CRC Success, send ACK */
-       bl_SendAck( 0 ); // 0 because there is no reply to this command
+       /* CRC Success, send ACK 
+       We will send the host a confirmation of the validity of the address which will be 1 byte long */
+       bl_SendAck( 1 );
 
        
     }

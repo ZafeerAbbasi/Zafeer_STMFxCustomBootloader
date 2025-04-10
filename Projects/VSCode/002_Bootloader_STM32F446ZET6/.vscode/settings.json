@@ -72,7 +72,8 @@
         "algorithm": "c",
         "stop_token": "c",
         "streambuf": "c",
-        "utility": "c"
+        "utility": "c",
+        "cstdint": "c"
     },
     "editor.tabSize": 4
 }
