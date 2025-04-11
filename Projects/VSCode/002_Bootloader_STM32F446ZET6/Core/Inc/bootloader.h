@@ -34,16 +34,26 @@ extern "C" {
 /* Typedefs ------------------------------------------------------------------*/
 /* USER CODE BEGIN Typedefs */
 
+/* Memory Code region */
+typedef struct BL_zMemRegion_t
+{
+	uint32_t startAddress;  /* Start address of the memory region */
+	uint32_t endAddress;    /* End address of the memory region */
+} BL_zMemRegion_t;
+
+
+/* Address Valid Status */
 typedef enum BL_eAddrValidStatus_t
 {
-  ADDR_VALID = 0,
-  ADDR_INVALID,
+	BL_eAddrValid,
+	BL_eAddrInvalid,
 } BL_eAddrValidStatus_t;
 
+
 /* Bootloader Command Codes */
-typedef enum BL_eCommandCode_t
+typedef enum BL_eCommandCodes_t
 {
-	BL_CMD_GET_VER = 0x51,
+	bl_CMD_GET_VER = 0x51,
 	BL_CMD_GET_HELP,
 	BL_CMD_GET_CID,
 	BL_CMD_GET_RDP_STATUS,
