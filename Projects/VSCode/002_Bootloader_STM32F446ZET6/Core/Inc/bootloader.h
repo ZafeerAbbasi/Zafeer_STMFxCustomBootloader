@@ -45,8 +45,8 @@ typedef struct BL_zMemRegion_t
 /* Address Valid Status */
 typedef enum BL_eAddrValidStatus_t
 {
-	BL_eAddrValid,
 	BL_eAddrInvalid,
+	BL_eAddrValid
 } BL_eAddrValidStatus_t;
 
 
@@ -71,9 +71,24 @@ typedef enum BL_eCommandCodes_t
 /* Bootloader CRC Status */
 typedef enum BL_eCRCStatus_t
 {
-	CRC_SUCCESS = 0,
-	CRC_FAIL,
+	CRC_FAIL = 0,
+	CRC_SUCCESS,
 } BL_eCRCStatus_t;
+
+/* Flash erase status */
+typedef enum BL_eFlashEraseStatus_t
+{
+	BL_eFlashEraseFail = 0,
+	BL_eFlashEraseSuccess,
+} BL_eFlashEraseStatus_t;
+
+
+/* Flash write status */
+typedef enum BL_eFlashWriteStatus_t
+{
+	BL_eFlashWriteFail = 0,
+	BL_eFlashWriteSuccess,
+} BL_eFlashWriteStatus_t;
 
 /* USER CODE END Typedefs */
 
@@ -82,7 +97,7 @@ typedef enum BL_eCRCStatus_t
 /* USER CODE BEGIN Private defines */
 
 /* Memory Addresses */
-#define USER_APPLICATION_BASE_ADDRESS	0x08006000U
+#define USER_APPLICATION_BASE_ADDRESS	0x08008000U
 #define SRAM1_SIZE      	112*1024     // STM32F446RE has 112KB of SRAM1
 #define SRAM1_END          	(SRAM1_BASE + SRAM1_SIZE)
 #define SRAM2_SIZE         	16*1024      // STM32F446RE has 16KB of SRAM2
@@ -97,6 +112,10 @@ typedef enum BL_eCRCStatus_t
 /* Bootloader ACK/NACK Codes */
 #define BOOTLOADER_ACK   0xA5
 #define BOOTLOADER_NACK  0x7F
+
+/* Bootloader Flash operations */
+#define BOOTLOADER_MASS_FLASH_ERASE 0xFF
+#define BOOTLOADER_MAX_SECTORS 8
 
 /* USER CODE END Private defines */
 

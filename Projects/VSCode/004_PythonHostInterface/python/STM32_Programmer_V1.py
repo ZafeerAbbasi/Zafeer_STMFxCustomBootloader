@@ -3,9 +3,10 @@ import struct
 import os
 import sys
 import glob
+import time
 
-Flash_HAL_OK                                        = 0x00
-Flash_HAL_ERROR                                     = 0x01
+Flash_HAL_OK                                        = 0x01
+Flash_HAL_ERROR                                     = 0x00
 Flash_HAL_BUSY                                      = 0x02
 Flash_HAL_TIMEOUT                                   = 0x03
 Flash_HAL_INV_ADDR                                  = 0x04
@@ -68,7 +69,11 @@ def close_the_file():
     
 def print_message_crc( data_buf ):
     len = data_buf[0]
-    print( "   Message == > 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X" % (data_buf[0],data_buf[1],data_buf[2],data_buf[3],data_buf[4],data_buf[5]))
+    x = tuple( data_buf[0:len])
+    text = ""
+    for i in range(len):
+        text += "0x%02X " % ( x[i] )
+    print( "   Message == > %s" % ( text ) )
     print( "   CRC     == > 0x%02X%02X%02X%02X" % ( data_buf[ len ], data_buf[ len - 1 ], data_buf[ len - 2 ], data_buf[ len - 3 ] ) )
 
 def word_to_byte(addr, index , lowerfirst):
@@ -198,8 +203,14 @@ def process_COMMAND_BL_GET_RDP_STATUS(length):
 def process_COMMAND_BL_GO_TO_ADDR(length):
     addr_status=0
     value = read_serial_port(length)
-    addr_status = bytearray(value)
-    print("\n   Address Status : ",hex(addr_status[0]))
+    addr_status = hex( bytearray(value)[ 0 ] )
+    if(addr_status == '0x0'):
+        addr_status = 'Address INVALID'
+    elif(addr_status == '0x1'):
+        addr_status = 'Address VALID'
+    else:
+        addr_status = 'UNKNOWN VALUE'
+    print("\n   Address Status : ", addr_status )
 
 def process_COMMAND_BL_FLASH_ERASE(length):
     erase_status=0
@@ -432,14 +443,15 @@ def decode_menu_command_code(command):
         
         ret_value = read_bootloader_reply(data_buf[1])
         
+
     elif(command == 6):
-        print("\n   This command is not supported")
-    elif(command == 7):
+        ################################################################################## BL_FLASH_ERASE
         print("\n   Command == > BL_FLASH_ERASE")
         data_buf[0] = COMMAND_BL_FLASH_ERASE_LEN-1 
         data_buf[1] = COMMAND_BL_FLASH_ERASE 
-        sector_num = input("\n   Enter sector number(0-7 or 0xFF) here :")
+        sector_num = input("\n   Enter starting sector number(0-7 or 0xFF for mass erase) here :")
         sector_num = int(sector_num, 16)
+        nsec = 1
         if(sector_num != 0xff):
             nsec=int(input("\n   Enter number of sectors to erase(max 8) here :"))
         
@@ -459,9 +471,14 @@ def decode_menu_command_code(command):
         for i in data_buf[1:COMMAND_BL_FLASH_ERASE_LEN]:
             Write_to_serial_port(i,COMMAND_BL_FLASH_ERASE_LEN-1)
         
-        ret_value = read_bootloader_reply(data_buf[1])
+        if( sector_num == 0xff):
+            print("\n   Mass Erase command sent")
+        else:
+            ret_value = read_bootloader_reply(data_buf[1])
         
-    elif(command == 8):
+
+    elif(command == 7):
+        ################################################################################## BL_FLASH_MEM_WRITE
         print("\n   Command == > BL_MEM_WRITE")
         bytes_remaining=0
         t_len_of_file=0
@@ -528,9 +545,13 @@ def decode_menu_command_code(command):
 
             bytes_so_far_sent+=len_to_read
             bytes_remaining = t_len_of_file - bytes_so_far_sent
-            print("\n   bytes_so_far_sent:{0} -- bytes_remaining:{1}\n".format(bytes_so_far_sent,bytes_remaining)) 
-        
-            ret_value = read_bootloader_reply(data_buf[1])
+            print("\n   bytes_so_far_sent:{0} -- bytes_remaining:{1}\n".format(bytes_so_far_sent,bytes_remaining))
+
+            if (bytes_remaining == 0):
+                print("\n   All bytes sent")
+            else:
+                ret_value = read_bootloader_reply(data_buf[1])
+
         mem_write_active=0
 
             
@@ -738,21 +759,20 @@ while True:
   
     
     print("\n   Which BL command do you want to send ??\n")
-    print("   BL_GET_VER                            --> 1")
-    print("   BL_GET_HLP                            --> 2")
-    print("   BL_GET_CID                            --> 3")
-    print("   BL_GET_RDP_STATUS                     --> 4")
-    print("   BL_GO_TO_ADDR                         --> 5")
-    print("   BL_FLASH_MASS_ERASE                   --> 6")
-    print("   BL_FLASH_ERASE                        --> 7")
-    print("   BL_MEM_WRITE                          --> 8")
-    print("   BL_EN_R_W_PROTECT                     --> 9")
-    print("   BL_MEM_READ                           --> 10")
-    print("   BL_READ_SECTOR_P_STATUS               --> 11")
-    print("   BL_OTP_READ                           --> 12")
-    print("   BL_DIS_R_W_PROTECT                    --> 13")
-    print("   BL_MY_NEW_COMMAND                     --> 14")
-    print("   MENU_EXIT                             --> 0")
+    print("   BL_GET_VER --------------------> 1")
+    print("   BL_GET_HLP --------------------> 2")
+    print("   BL_GET_CID --------------------> 3")
+    print("   BL_GET_RDP_STATUS -------------> 4")
+    print("   BL_GO_TO_ADDR -----------------> 5")
+    print("   BL_FLASH_ERASE ----------------> 6")
+    print("   BL_MEM_WRITE ------------------> 7")
+    print("   BL_EN_R_W_PROTECT -------------> 8")
+    print("   BL_MEM_READ -------------------> 9")
+    print("   BL_READ_SECTOR_P_STATUS ------> 10")
+    print("   BL_OTP_READ ------------------> 12")
+    print("   BL_DIS_R_W_PROTECT -----------> 13")
+    print("   BL_MY_NEW_COMMAND ------------> 14")
+    print("   MENU_EXIT ---------------------> 0")
 
     #command_code = int(input("\n   Type the command code here :") )
 

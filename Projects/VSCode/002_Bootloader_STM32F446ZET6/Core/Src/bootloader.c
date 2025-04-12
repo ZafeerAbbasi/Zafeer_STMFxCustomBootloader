@@ -77,15 +77,21 @@ static void bl_HandleReadSectorStatus( uint8_t *pRxBuffer);
 static void bl_HandleOtpRead( uint8_t *pRxBuffer);
 static void bl_HandleDisRwProtect( uint8_t *pRxBuffer);
 
-static void bl_SendAck( uint32_t nextMessageLength);
+static void bl_SendAck( uint32_t nextMessageLength, bool isPrint );
 static void bl_SendNack( void );
 
 static void bl_SendData( uint8_t *pBuffer, uint16_t uiLen );
 
-static const char *bl_GetVersion( void );
-static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_t hostCRC );
-static BOOL bl_GetUniqueID( uint8_t *pBuffer );
+static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_t hostCRC, bool isPrint );
 static BL_eAddrValidStatus_t bl_VerifyAddress( uint32_t destAddr );
+
+static const char *bl_GetVersion( void );
+static BOOL bl_GetUniqueID( uint8_t *pBuffer );
+
+static BL_eFlashEraseStatus_t bl_ExecuteFlashErase( uint8_t initialSector, uint8_t noOfSectors );
+static BL_eFlashWriteStatus_t bl_ExecuteMemWrite( uint8_t *pData, uint32_t destAddr, uint32_t dataLength );
+
+static void bl_SetLED2BlinkState( TMR_eTimOCState_t eOCState  );
 
 /* USER CODE END PFP */
 
@@ -234,7 +240,7 @@ static void bl_HandleGetVer( uint8_t *pRxBuffer)
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_ver \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC, TRUE);
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -242,7 +248,7 @@ static void bl_HandleGetVer( uint8_t *pRxBuffer)
     else
     {       
         pBootloaderVersion = bl_GetVersion( ); // Get bootloader version
-        bl_SendAck( strlen( pBootloaderVersion ) ); // Send ACK with length of next message
+        bl_SendAck( strlen( pBootloaderVersion ), TRUE ); // Send ACK with length of next message
 
         DEBUG_PRINTF( "BL_DEBUG_MSG: Bootloader version: %s, Length: %d \r\n", pBootloaderVersion, strlen( pBootloaderVersion ) );
         bl_SendData( ( uint8_t * )pBootloaderVersion, strlen( pBootloaderVersion ) ); // Send bootloader version to host
@@ -284,7 +290,7 @@ static void bl_HandleGetHelp( uint8_t *pRxBuffer )
     sprintf( aSupportedCommands, pSupportedCommandsText, bl_GetVersion( ) );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC, TRUE);
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -292,7 +298,7 @@ static void bl_HandleGetHelp( uint8_t *pRxBuffer )
     else
     {
        
-        bl_SendAck( strlen( aSupportedCommands ) ); // Send ACK with length of next message
+        bl_SendAck( strlen( aSupportedCommands ), TRUE ); // Send ACK with length of next message
 
         DEBUG_PRINTF( "BL_DEBUG_MSG: Supported commands: %s, Length: %d \r\n", aSupportedCommands, strlen( aSupportedCommands ) );
         bl_SendData( ( uint8_t * )aSupportedCommands, strlen( aSupportedCommands ) ); // Send supported commands to host
@@ -315,7 +321,7 @@ static void bl_HandleGetCid( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC, TRUE);
     if ( eCrcStatus != CRC_SUCCESS )
     { 
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -323,7 +329,7 @@ static void bl_HandleGetCid( uint8_t *pRxBuffer )
     else
     {
        
-        bl_SendAck( sizeof( aUniqueID ) ); // Send ACK with length of next message
+        bl_SendAck( sizeof( aUniqueID ), TRUE ); // Send ACK with length of next message
 
         /* Get Unique ID */
         bl_GetUniqueID( aUniqueID );
@@ -353,7 +359,7 @@ static void bl_HandleGetRdpStatus( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_rdp \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC, TRUE);
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -364,7 +370,7 @@ static void bl_HandleGetRdpStatus( uint8_t *pRxBuffer )
         HAL_FLASHEx_OBGetConfig( &bl_hOptionBytes );
 
         /* Send ACK */
-        bl_SendAck( sizeof( bl_hOptionBytes.RDPLevel ) ); // Send ACK with length of next message
+        bl_SendAck( sizeof( bl_hOptionBytes.RDPLevel ), TRUE ); // Send ACK with length of next message
         DEBUG_PRINTF( "BL_DEBUG_MSG: RDP Status: 0x%02X \r\n", ( uint8_t )bl_hOptionBytes.RDPLevel );
 
         /* Send RDP Status to host */
@@ -388,7 +394,7 @@ static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_go_to_addr \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, TRUE );
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -397,20 +403,30 @@ static void bl_HandleGoToAddr( uint8_t *pRxBuffer )
     {
        /* CRC Success, send ACK 
        We will send the host a confirmation of the validity of the address which will be 1 byte long */
-       bl_SendAck( 1 );
+       bl_SendAck( 1, TRUE );
 
         /* Verify that address is valid */
         if( bl_VerifyAddress( destAddr ) == BL_eAddrValid )
         {
-            DEBUG_PRINTF( "BL_DEBUG_MSG: Address is valid, jumping to address: 0x%08X \r\n", destAddr );
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Address is valid, jumping to address: 0x%08X \r\n", ( unsigned int )destAddr );
 
             /* Send address valid status to host */
             uint8_t addrValid = BL_eAddrValid;
             bl_SendData( ( uint8_t * )&addrValid, sizeof( addrValid ) ); // Send address valid status to host
 
+            /* Jump to address */
+            // destAddr += 1;
+            void ( *pfnJumpToAddr ) ( void ) = ( void ( * ) ( void ) )destAddr; // Function pointer to jump to address
+            pfnJumpToAddr( );
+
         }
         else
         {
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Address is invalid: 0x%08X \r\n", ( unsigned int )destAddr );
+
+            /* Send address invalid status to host */
+            uint8_t addrInvalid = BL_eAddrInvalid;
+            bl_SendData( ( uint8_t * )&addrInvalid, sizeof( addrInvalid ) ); // Send address invalid status to host
 
         }
        
@@ -428,19 +444,40 @@ static void bl_HandleFlashErase( uint8_t *pRxBuffer )
 {
     uint8_t totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t hostCRC = *( ( uint32_t * ) ( pRxBuffer + totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+    BL_eFlashEraseStatus_t flashEraseStatus; // Variable to store flash erase status
+    uint8_t initialSector = pRxBuffer[ 2 ]; // Get the initial sector to erase
+    uint8_t noOfSectors = pRxBuffer[ 3 ]; // Get the number of sectors to erase
 
-    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_flash_erase \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4,  hostCRC, TRUE);
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
-
     }
     else
     {
-       
+        bl_SendAck( 1, TRUE ); // Next message will be status of flash erase
+
+        if( initialSector != 0xFF )
+        {
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Attempting mass flash erase \r\n" );
+        }
+        else
+        {
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Attempting to erase flash sectors %d to %d \r\n", initialSector, initialSector + noOfSectors - 1 );
+        }
+
+        bl_SetLED2BlinkState( TMR_eOCRun ); // Set LED2 to blink state
+
+        flashEraseStatus = bl_ExecuteFlashErase( initialSector, noOfSectors ); // Erase flash sectors
+        
+        bl_SetLED2BlinkState( TMR_eOCStop ); // Set LED2 to stop state
+
+        /* Send flash erase status to host */
+        bl_SendData( ( uint8_t * )&flashEraseStatus, sizeof( flashEraseStatus ) ); // Send flash erase status to host
+
     }
 }
 
@@ -455,11 +492,30 @@ static void bl_HandleMemWrite( uint8_t *pRxBuffer )
 {
     uint8_t totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t hostCRC = *( ( uint32_t * ) ( pRxBuffer + totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+    uint32_t destAddr = *( ( uint32_t * ) ( pRxBuffer + 2 ) ); // Get the address to write to
+    uint8_t dataLength = pRxBuffer[ 6 ]; // Get the length of data to write
+    uint8_t *pData = ( uint8_t * ) &pRxBuffer[ 7 ]; // Get the data to write
+    BL_eFlashWriteStatus_t flashWriteStatus; // Variable to store flash write status
+    static bool isFirstPacket = true; // Flag to check if this is the first packet
 
-    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+    /* If this is the first packet, set LED2 to blink state */
+    if( isFirstPacket )
+    {
+        bl_SetLED2BlinkState( TMR_eOCRun ); // Set LED2 to blink state
+        isFirstPacket = false; // Set flag to false
+
+        DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_mem_write \r\n" );
+    }
+
+    /* If the length is less than 128, it means its the last data packet to write */
+    if( dataLength < 128 )
+    {
+        bl_SetLED2BlinkState( TMR_eOCStop ); // Set LED2 to stop state
+        isFirstPacket = true; // Set flag to true
+    }
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, FALSE );
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -467,7 +523,28 @@ static void bl_HandleMemWrite( uint8_t *pRxBuffer )
     }
     else
     {
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+        bl_SendAck( 1, FALSE ); // Next message will be status of flash write
+
+        /* Verify that address is valid */
+        if( bl_VerifyAddress( destAddr ) == BL_eAddrValid )
+        {
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Writing data to address: 0x%08X \r\n", ( unsigned int )destAddr );
+
+            flashWriteStatus = bl_ExecuteMemWrite( pData, destAddr, dataLength ); // Write data to memory
+
+            /* Send flash write status to host */
+            bl_SendData( ( uint8_t * )&flashWriteStatus, sizeof( flashWriteStatus ) ); // Send flash write status to host
+
+        }
+        else
+        {
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Address is invalid: 0x%08X \r\n", ( unsigned int )destAddr );
+
+            /* Send address invalid status to host */
+            uint8_t addrInvalid = BL_eAddrInvalid;
+            bl_SendData( ( uint8_t * )&addrInvalid, sizeof( addrInvalid ) ); // Send address invalid status to host
+        }
+
     }
 }
 
@@ -486,7 +563,7 @@ static void bl_HandleEnRwProtect( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, TRUE );
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -494,7 +571,7 @@ static void bl_HandleEnRwProtect( uint8_t *pRxBuffer )
     }
     else
     {
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+        
     }
 }
 
@@ -513,7 +590,7 @@ static void bl_HandleMemRead( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, TRUE );
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -521,7 +598,7 @@ static void bl_HandleMemRead( uint8_t *pRxBuffer )
     }
     else
     {
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+        
     }
 }
 
@@ -540,7 +617,7 @@ static void bl_HandleReadSectorStatus( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, TRUE );
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -548,7 +625,7 @@ static void bl_HandleReadSectorStatus( uint8_t *pRxBuffer )
     }
     else
     {
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+        
     }
 }
 
@@ -567,7 +644,7 @@ static void bl_HandleOtpRead( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, TRUE );
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -575,7 +652,7 @@ static void bl_HandleOtpRead( uint8_t *pRxBuffer )
     }
     else
     {
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+        
     }
 }
 
@@ -594,7 +671,7 @@ static void bl_HandleDisRwProtect( uint8_t *pRxBuffer )
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
 
     /* Verify CRC */
-    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC );
+    BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, TRUE );
     if ( eCrcStatus != CRC_SUCCESS )
     {
         bl_SendNack( ); // Send NACK if CRC verification fails
@@ -602,7 +679,7 @@ static void bl_HandleDisRwProtect( uint8_t *pRxBuffer )
     }
     else
     {
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success \r\n" );
+        
     }
 }
 
@@ -627,9 +704,10 @@ static void bl_HandleInvalidCommand( uint8_t RxCommandCode, uint8_t *pRxBuffer )
  * @param pBuffer Pointer to data buffer
  * @param buffLen Length of data to verify
  * @param hostCRC CRC value received from host
+ * @param isPrint Flag to print debug messages
  * @return BL_eCRCStatus_t Status of CRC verification
  */
-static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_t hostCRC )
+static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_t hostCRC, bool isPrint )
 {
     uint32_t calculatedCRC = 0; // Variable to store calculated CRC
     uint32_t aCrcBuff[ buffLen ]; // Buffer to store CRC data
@@ -649,12 +727,23 @@ static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_
     if( calculatedCRC != hostCRC )
     {
         retVal = CRC_FAIL;
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification failed, Host CRC: 0x%08X, Calculated CRC: 0x%08X \r\n", ( uint8_t )hostCRC, ( uint8_t )calculatedCRC );
     }
     else
     {
         retVal = CRC_SUCCESS;
-        DEBUG_PRINTF( "BL_DEBUG_MSG: CRC verification success, Host CRC: 0x%08X, Calculated CRC: 0x%08X \r\n", ( uint8_t )hostCRC, ( uint8_t )calculatedCRC );
+    }
+
+    /* Print the CRC values for debugging */
+    if( isPrint == TRUE )
+    {
+        if( retVal == CRC_SUCCESS )
+        {
+            DEBUG_PRINTF( "BL_DEBUG_MSG: CRC Success, Host CRC: 0x%08X, Calculated CRC: 0x%08X \r\n", ( unsigned int )hostCRC, ( unsigned int )calculatedCRC );
+        }
+        else
+        {
+            DEBUG_PRINTF( "BL_DEBUG_MSG: CRC Fail, Host CRC: 0x%08X, Calculated CRC: 0x%08X \r\n", ( unsigned int )hostCRC, ( unsigned int )calculatedCRC );
+        }
     }
 
     return retVal;
@@ -668,7 +757,7 @@ static BL_eCRCStatus_t bl_VerifyCRC( uint8_t *pBuffer, uint32_t buffLen, uint32_
  * @param rxCommandCode Command code received
  * @param nextMessageLength Length of next message
  */
-static void bl_SendAck( uint32_t nextMessageLength )
+static void bl_SendAck( uint32_t nextMessageLength, bool isPrint )
 {
     /* Fill the ACK Buffer */
     uint8_t aAckBuff[ 5 ] = { 0 };
@@ -682,8 +771,11 @@ static void bl_SendAck( uint32_t nextMessageLength )
     bl_SendData( &aAckBuff[ 0 ], sizeof( aAckBuff ) );
 
     /* Print the aAckBuff to debug */
-    DEBUG_PRINTF( "BL_DEBUG_MSG: ACK Message: 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X \r\n", 
-                    aAckBuff[ 0 ], aAckBuff[ 1 ], aAckBuff[ 2 ], aAckBuff[ 3 ], aAckBuff[ 4 ] );
+    if( isPrint == TRUE )
+    {
+        DEBUG_PRINTF( "BL_DEBUG_MSG: ACK Message: 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X \r\n", 
+            aAckBuff[ 0 ], aAckBuff[ 1 ], aAckBuff[ 2 ], aAckBuff[ 3 ], aAckBuff[ 4 ] );
+    }
 }
 
 
@@ -771,6 +863,154 @@ static BOOL bl_GetUniqueID( uint8_t *pBuffer )
 
 
 /**
+ * @brief Bootloader function to set LED2 blink state.
+ * 
+ * @param eOCState Output Compare state
+ */
+static void bl_SetLED2BlinkState( TMR_eTimOCState_t eOCState  )
+{
+    switch( eOCState )
+    {
+        case TMR_eOCRun:
+
+            /* Activate TIMER OC Channel */
+            TMR_SetTimState( &htim4, TMR_eTimerRun, eOCState, TIM_CHANNEL_2 );
+            break;
+
+        case TMR_eOCStop:
+
+            /* Deactivate TIMER OC Channel */
+            TMR_SetTimState( &htim4, TMR_eTimerStop, eOCState, TIM_CHANNEL_2 );
+            break;
+    }
+}
+
+
+
+static BL_eFlashEraseStatus_t bl_ExecuteFlashErase( uint8_t initialSector, uint8_t noOfSectors )
+{
+    BL_eFlashEraseStatus_t flashEraseStatus = BL_eFlashEraseSuccess; // Variable to store flash erase status
+    HAL_StatusTypeDef halStatus;
+    uint32_t failedSectorNo = 0; // Variable to store failed sector number in case of failure
+    FLASH_EraseInitTypeDef zFlashEraseInitStruct =
+    {
+        .VoltageRange   = FLASH_VOLTAGE_RANGE_3,
+        .Banks          = FLASH_BANK_1
+    };
+
+    /* Mass erase? */
+    if( initialSector == BOOTLOADER_MASS_FLASH_ERASE )
+    {
+        zFlashEraseInitStruct.TypeErase = FLASH_TYPEERASE_MASSERASE;
+        zFlashEraseInitStruct.Sector = FLASH_SECTOR_0;
+        zFlashEraseInitStruct.NbSectors = BOOTLOADER_MAX_SECTORS;
+    }
+    else
+    {
+        zFlashEraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
+        zFlashEraseInitStruct.Sector = initialSector;
+        zFlashEraseInitStruct.NbSectors = noOfSectors;
+    }
+    
+    /* Verify that the sectors are within limit */
+    if( initialSector != BOOTLOADER_MASS_FLASH_ERASE )
+    {
+        /* Make sure the sectors don't go over limit 
+        We do minus 1 because we include the inital sector in the noOfSectors;
+        For ex. inital = 3, noOfSectors = 4 -> Means erase sectors 3, 4, 5, 6
+        Therefore, end sector = initial ( 3 ) + noOfSectors ( 4 ) - 1 = 6 */
+        if( initialSector + noOfSectors - 1 > BOOTLOADER_MAX_SECTORS )
+        {
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Sectors out of range, initialSector: %d, noOfSectors: %d \r\n", initialSector, noOfSectors );
+            flashEraseStatus = BL_eFlashEraseFail;
+        }
+        else
+        {
+            /* Erase sectors */
+            HAL_FLASH_Unlock( ); // Unlock flash memory
+            halStatus = HAL_FLASHEx_Erase( &zFlashEraseInitStruct, &failedSectorNo );
+            HAL_FLASH_Lock( ); // Lock flash memory
+        }
+
+        /* Check if the erase was successful */
+        if( halStatus != HAL_OK )
+        {
+            /* Erase failed */
+            flashEraseStatus = BL_eFlashEraseFail;
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Flash erase failed, failed sector: %lu \r\n", failedSectorNo );
+        }
+        else
+        {
+            /* Erase successful */
+            flashEraseStatus = BL_eFlashEraseSuccess;
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Flash erase successful \r\n" );
+        }
+    }
+    else
+    {
+        /* Mass erase */
+        HAL_FLASH_Unlock( ); // Unlock flash memory
+        halStatus = HAL_FLASHEx_Erase( &zFlashEraseInitStruct, &failedSectorNo );
+        HAL_FLASH_Lock( ); // Lock flash memory
+
+        /* Check if the erase was successful */
+        if( halStatus != HAL_OK )
+        {
+            /* Erase failed */
+            flashEraseStatus = BL_eFlashEraseFail;
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Flash mass erase failed, failed sector: %lu \r\n", failedSectorNo );
+        }
+        else
+        {
+            /* Erase successful */
+            flashEraseStatus = BL_eFlashEraseSuccess;
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Flash mass erase successful \r\n" );
+        }
+    }
+
+    return flashEraseStatus;
+}
+
+
+
+/**
+ * @brief Bootloader function to write data to memory.
+ * 
+ * @param pData Pointer to data buffer
+ * @param destAddr Destination address to write to
+ * @param dataLength Length of data to write
+ * @return BL_eFlashEraseStatus_t Status of flash write operation
+ */
+static BL_eFlashWriteStatus_t bl_ExecuteMemWrite( uint8_t *pData, uint32_t destAddr, uint32_t dataLength )
+{
+    BL_eFlashWriteStatus_t flashWriteStatus = BL_eFlashWriteSuccess; // Variable to store flash write status
+    HAL_StatusTypeDef halStatus;
+
+    /* Unlock the flash memory */
+    HAL_FLASH_Unlock( );
+
+    /* Write data to memory */
+    for ( uint8_t i = 0; i < dataLength && flashWriteStatus != BL_eFlashWriteFail; i++ )
+    {
+        halStatus = HAL_FLASH_Program( FLASH_TYPEPROGRAM_BYTE, destAddr + i, pData[ i ] );
+        if( halStatus != HAL_OK )
+        {
+            /* Write failed */
+            flashWriteStatus = BL_eFlashWriteFail;
+            DEBUG_PRINTF( "BL_DEBUG_MSG: Flash write failed at address: 0x%08X \r\n", ( unsigned int )( destAddr + i ) );
+            break;
+        }
+    }
+
+    /* Lock the flash memory */
+    HAL_FLASH_Lock( );
+
+    return flashWriteStatus;
+}
+
+
+
+/**
  * @brief Bootloader function to verify address.
  * 
  * @param destAddr Destination address to verify
@@ -780,7 +1020,7 @@ static BOOL bl_GetUniqueID( uint8_t *pBuffer )
 static BL_eAddrValidStatus_t bl_VerifyAddress( uint32_t destAddr )
 {
     const BL_zMemRegion_t *pMemRegion = NULL;
-    BL_eAddrValidStatus_t retVal = BL_eAddrValid;
+    BL_eAddrValidStatus_t retVal = BL_eAddrInvalid;
 
     /* Check if the address is valid */
     for ( uint8_t i = 0; i < sizeof( bl_azMemRegions ) / sizeof( BL_zMemRegion_t ); i++ )
@@ -788,10 +1028,10 @@ static BL_eAddrValidStatus_t bl_VerifyAddress( uint32_t destAddr )
         pMemRegion = &bl_azMemRegions[ i ];
 
         /* If the address is under the start or over the end, it is invalid */
-        if( destAddr < pMemRegion->startAddress || destAddr > pMemRegion->endAddress )
+        if( destAddr >= pMemRegion->startAddress && destAddr <= pMemRegion->endAddress )
         {
             /* Address is invalid */
-            retVal = BL_eAddrInvalid;
+            retVal = BL_eAddrValid;
         }
     }
 

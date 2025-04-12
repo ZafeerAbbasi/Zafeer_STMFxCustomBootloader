@@ -31,6 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "tim.h"
 
 /* STM32-Specific includes */
 #include "stm32f4xx_ll_utils.h"
@@ -54,6 +55,7 @@ extern "C" {
 extern UART_HandleTypeDef huart3;   // UART handle for USART3
 extern UART_HandleTypeDef huart2;   // UART handle for USART2
 extern CRC_HandleTypeDef hcrc;      // CRC handle
+extern TIM_HandleTypeDef htim4;     // Timer handle for TIM4
 
 /* USER CODE END EC */
 
@@ -100,17 +102,15 @@ void Error_Handler(void);
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
-#define LD2_Pin GPIO_PIN_7
-#define LD2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-#define DEBUG_PRINT  // Comment this line to disable prints
+#define ENABLE_DEBUG_PRINT  // Comment this line to disable prints
 #define BOOL bool
 #define TRUE 1
 #define FALSE 0
 
 
-#ifdef DEBUG_PRINT
+#ifdef ENABLE_DEBUG_PRINT
     #define DEBUG_PRINTF(...)   printf(__VA_ARGS__)
 #else
     #define DEBUG_PRINTF(...)   // Nothing

@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "crc.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -75,6 +76,7 @@ int main( void )
   MX_USART3_UART_Init( );
   MX_USART2_UART_Init( );
   MX_CRC_Init( );
+  MX_TIM4_Init( );
 
   /* Start Bootloader program */
   BL_Start( );

@@ -73,7 +73,14 @@
         "stop_token": "c",
         "streambuf": "c",
         "utility": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "stm32f4xx_hal_def.h": "c",
+        "stm32f4xx.h": "c",
+        "stm32f446xx.h": "c",
+        "stddef.h": "c",
+        "stm32_hal_legacy.h": "c",
+        "stm32f4xx_ll_utils.h": "c",
+        "tim.h": "c"
     },
     "editor.tabSize": 4
 }
