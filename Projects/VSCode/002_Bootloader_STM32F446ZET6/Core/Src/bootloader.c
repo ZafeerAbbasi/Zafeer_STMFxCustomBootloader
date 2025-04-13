@@ -90,6 +90,7 @@ static BOOL bl_GetUniqueID( uint8_t *pBuffer );
 
 static BL_eFlashEraseStatus_t bl_ExecuteFlashErase( uint8_t initialSector, uint8_t noOfSectors );
 static BL_eFlashWriteStatus_t bl_ExecuteMemWrite( uint8_t *pData, uint32_t destAddr, uint32_t dataLength );
+static BL_eEnRWProtectStatus_t bl_ExecuteRWProtection( uint8_t *pSectorDetails, uint8_t *protectionMode, bool isEnable );
 
 static void bl_SetLED2BlinkState( TMR_eTimOCState_t eOCState  );
 
@@ -559,8 +560,10 @@ static void bl_HandleEnRwProtect( uint8_t *pRxBuffer )
 {
     uint8_t totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t hostCRC = *( ( uint32_t * ) ( pRxBuffer + totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+    BL_eEnRWProtectStatus_t rwProtectStatus; // Variable to store read/write protect status
 
-    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+
+    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_en_rw_protect \r\n" );
 
     /* Verify CRC */
     BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, TRUE );
@@ -571,6 +574,13 @@ static void bl_HandleEnRwProtect( uint8_t *pRxBuffer )
     }
     else
     {
+        bl_SendAck( 1, TRUE ); // Next message will be status of enable read/write protect
+
+        /* Execute EnRWProtection */
+        rwProtectStatus = bl_ExecuteRWProtection( &pRxBuffer[ 2 ], &pRxBuffer[ 3 ], TRUE ); // Enable read/write protect
+
+        /* Send read/write protect status to host */
+        bl_SendData( ( uint8_t * )&rwProtectStatus, sizeof( rwProtectStatus ) ); // Send read/write protect status to host
         
     }
 }
@@ -586,6 +596,8 @@ static void bl_HandleMemRead( uint8_t *pRxBuffer )
 {
     uint8_t totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t hostCRC = *( ( uint32_t * ) ( pRxBuffer + totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+    uint32_t destAddr = *( ( uint32_t * ) ( pRxBuffer + 2 ) ); // Get the address to read from
+    uint8_t dataLength = pRxBuffer[ 6 ]; // Get the length of data to read
 
     DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
 
@@ -598,6 +610,7 @@ static void bl_HandleMemRead( uint8_t *pRxBuffer )
     }
     else
     {
+        bl_SendAck( dataLength + 1, TRUE ); // Next message will be length of data to read + 1 for CRC
         
     }
 }
@@ -652,7 +665,6 @@ static void bl_HandleOtpRead( uint8_t *pRxBuffer )
     }
     else
     {
-        
     }
 }
 
@@ -667,8 +679,11 @@ static void bl_HandleDisRwProtect( uint8_t *pRxBuffer )
 {
     uint8_t totalPacketLength = pRxBuffer[ 0 ] + 1; // Length of data received
     uint32_t hostCRC = *( ( uint32_t * ) ( pRxBuffer + totalPacketLength - 4 ) ); // CRC is always the last 4 bytes
+    BL_eEnRWProtectStatus_t rwProtectStatus; // Variable to store read/write protect status
+    uint8_t sectorDetails = 0xFF;
+    uint8_t protectionMode = OPTIONBYTE_RDP | OPTIONBYTE_WRP;
 
-    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_get_help \r\n" );
+    DEBUG_PRINTF( "BL_DEBUG_MSG: Recieved Command, bl_dis_rw_protect \r\n" );
 
     /* Verify CRC */
     BL_eCRCStatus_t eCrcStatus = bl_VerifyCRC( pRxBuffer, totalPacketLength - 4, hostCRC, TRUE );
@@ -679,7 +694,12 @@ static void bl_HandleDisRwProtect( uint8_t *pRxBuffer )
     }
     else
     {
+        bl_SendAck( 1, TRUE ); // Next message will be status of disable read/write protect
+
+        rwProtectStatus = bl_ExecuteRWProtection( &sectorDetails, &protectionMode, FALSE ); // Disable read/write protect
         
+        /* Send read/write protect status to host */
+        bl_SendData( ( uint8_t * )&rwProtectStatus, sizeof( rwProtectStatus ) ); // Send read/write protect status to host
     }
 }
 
@@ -1006,6 +1026,77 @@ static BL_eFlashWriteStatus_t bl_ExecuteMemWrite( uint8_t *pData, uint32_t destA
     HAL_FLASH_Lock( );
 
     return flashWriteStatus;
+}
+
+
+
+/**
+ * @brief Bootloader function to enable/disable read/write protection.
+ * 
+ * @param pSectorDetails Pointer to sector details
+ * @param protectionMode Pointer to protection mode
+ * @param isDisable Flag to enable/disable protection
+ * @return BL_eEnRWProtectStatus_t Status of read/write protection operation
+ */
+static BL_eEnRWProtectStatus_t bl_ExecuteRWProtection( uint8_t *pSectorDetails, uint8_t *protectionMode, bool isEnable )
+{
+    BL_eEnRWProtectStatus_t rwProtectStatus = BL_eEnRWProtectSuccess; // Variable to store read/write protect status
+    
+    /* Generic fields are same for both Write/Read protection */
+    FLASH_OBProgramInitTypeDef zOBProgramInitStruct =
+    {
+        .Banks = FLASH_BANK_1,
+        .WRPState = isEnable ? OB_WRPSTATE_ENABLE : OB_WRPSTATE_DISABLE,
+        .WRPSector = *pSectorDetails,
+    };
+
+    /* Specific fields for either read or write */
+    if( ( *protectionMode & OPTIONBYTE_RDP ) == OPTIONBYTE_RDP )
+    {
+        /* Read and write protection */
+        zOBProgramInitStruct.OptionType = OPTIONBYTE_WRP | OPTIONBYTE_RDP;
+        zOBProgramInitStruct.RDPLevel = isEnable ? OB_RDP_LEVEL_1 : OB_RDP_LEVEL_0;
+    }
+    else
+    {
+        /* Write protection */
+        zOBProgramInitStruct.OptionType = OPTIONBYTE_WRP;
+    }
+
+
+    DEBUG_PRINTF( "BL_DEBUG_MSG: %sing %s protection for sectors ( MSB First ): %d %d %d %d %d %d %d %d \r\n", 
+        isEnable ? "Enabl" : "Disabl", 
+        ( *protectionMode & OPTIONBYTE_RDP ) == OPTIONBYTE_RDP ? "Read/Write" : "Write", 
+        ( *pSectorDetails >> 7 ) & 0x01,
+        ( *pSectorDetails >> 6 ) & 0x01,
+        ( *pSectorDetails >> 5 ) & 0x01,
+        ( *pSectorDetails >> 4 ) & 0x01,
+        ( *pSectorDetails >> 3 ) & 0x01,
+        ( *pSectorDetails >> 2 ) & 0x01,
+        ( *pSectorDetails >> 1 ) & 0x01,
+        ( *pSectorDetails >> 0 ) & 0x01 );
+
+    /* Program the option bytes */
+    HAL_FLASH_OB_Unlock( ); // Unlock option bytes
+
+    if( HAL_FLASHEx_OBProgram( &zOBProgramInitStruct ) != HAL_OK )
+    {
+        /* Option byte programming failed */
+        rwProtectStatus = BL_eEnRWProtectFail;
+        DEBUG_PRINTF( "BL_DEBUG_MSG: Option byte programming failed \r\n" );
+    }
+    else
+    {
+        /* Option byte programming successful */
+        rwProtectStatus = BL_eEnRWProtectSuccess;
+        DEBUG_PRINTF( "BL_DEBUG_MSG: Option byte programming successful \r\n" );
+
+        HAL_FLASH_OB_Launch( ); // Launch option bytes
+    } 
+
+    HAL_FLASH_Lock( ); // Lock option bytes
+
+    return rwProtectStatus;
 }
 
 

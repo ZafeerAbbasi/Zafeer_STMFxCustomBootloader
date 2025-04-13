@@ -69,9 +69,9 @@ def close_the_file():
     
 def print_message_crc( data_buf ):
     len = data_buf[0]
-    x = tuple( data_buf[0:len])
+    x = tuple( data_buf[0:len + 1])
     text = ""
-    for i in range(len):
+    for i in range(len + 1):
         text += "0x%02X " % ( x[i] )
     print( "   Message == > %s" % ( text ) )
     print( "   CRC     == > 0x%02X%02X%02X%02X" % ( data_buf[ len ], data_buf[ len - 1 ], data_buf[ len - 2 ], data_buf[ len - 3 ] ) )
@@ -298,19 +298,25 @@ def process_COMMAND_BL_DIS_R_W_PROTECT(length):
     status=0
     value = read_serial_port(length)
     status = bytearray(value)
-    if(status[0]):
-        print("\n   FAIL")
+    if( value != b'' ):
+        if(status[0]):
+            print("\n   SUCCESS")
+        else:
+            print("\n   FAIL")
     else:
-        print("\n   SUCCESS")
+        print("\n   No Response, Probably a Success but since we went from Protected to Unprotected, flash memory got erase" )
 
 def process_COMMAND_BL_EN_R_W_PROTECT(length):
     status=0
     value = read_serial_port(length)
     status = bytearray(value)
-    if(status[0]):
-        print("\n   FAIL")
+    if( value != b'' ):
+        if(status[0]):
+            print("\n   SUCCESS")
+        else:
+            print("\n   FAIL")
     else:
-        print("\n   SUCCESS")
+        print("\n   No Response, Probably a Success but STLINK cause the Bootloader to hang")
 
 
 
@@ -556,7 +562,8 @@ def decode_menu_command_code(command):
 
             
     
-    elif(command == 9):
+    elif(command == 8):
+        ################################################################################## BL_EN_R_W_PROTECT
         print("\n   Command == > BL_EN_R_W_PROTECT")
         total_sector = int(input("\n   How many sectors do you want to protect ?: "))
         sector_numbers = [0,0,0,0,0,0,0,0]
@@ -571,10 +578,7 @@ def decode_menu_command_code(command):
         mode=input("\n   Enter Sector Protection Mode(1 or 2 ):")
         mode = int(mode)
         if(mode != 2 and mode != 1):
-            printf("\n   Invalid option : Command Dropped")
-            return
-        if(mode == 2):
-            print("\n   This feature is currently not supported !") 
+            print("\n   Invalid option : Command Dropped")
             return
 
         data_buf[0] = COMMAND_BL_EN_R_W_PROTECT_LEN-1 

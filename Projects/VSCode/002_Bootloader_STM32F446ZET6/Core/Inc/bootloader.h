@@ -90,6 +90,13 @@ typedef enum BL_eFlashWriteStatus_t
 	BL_eFlashWriteSuccess,
 } BL_eFlashWriteStatus_t;
 
+/* Enable Read/Write protection status */
+typedef enum BL_eEnRWProtectStatus_t
+{
+	BL_eEnRWProtectFail = 0,
+	BL_eEnRWProtectSuccess,
+} BL_eEnRWProtectStatus_t;
+
 /* USER CODE END Typedefs */
 
 
